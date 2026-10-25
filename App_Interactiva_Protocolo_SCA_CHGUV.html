@@ -89,7 +89,7 @@
             1. Decisión Interactiva
           </button>
           <button onclick="switchTab('grace')" id="tab-btn-grace" class="px-3.5 py-2 rounded-lg text-xs font-bold transition border border-white/40" style="background-color: rgba(255,255,255,0.12); color: #FFFFFF;">
-            2. Escalas HEART y GRACE
+            2. Angina Inestable y GRACE
           </button>
           <button onclick="switchTab('resumen')" id="tab-btn-resumen" class="px-3.5 py-2 rounded-lg text-xs font-bold transition border border-white/40" style="background-color: rgba(255,255,255,0.12); color: #FFFFFF;">
             3. Tabla Rápida de Guardia
@@ -101,7 +101,7 @@
       </div>
       <!-- Aviso / Disclaimer Orientativo en Cabecera -->
       <div class="px-4 py-2 text-xs font-medium border-t border-white/20" style="background-color: #075241; color: #E6F4F1;">
-        ⚠️ <strong>AVISO CLÍNICO (DISCLAIMER):</strong> Esta herramienta interactiva tiene carácter <strong>exclusivamente orientativo</strong> basada en el protocolo del CHGUV y las Guías ESC 2023. En ningún caso sustituye el juicio clínico individualizado del facultativo responsable ni la valoración presencial del paciente.
+        ⚠️ <strong>AVISO CLÍNICO (DISCLAIMER):</strong> Herramienta de apoyo orientativo para facilitar la revisión del protocolo CHGUV y las Guías ESC 2023. No sustituye el juicio clínico individualizado del facultativo responsable.
       </div>
     </div>
 
@@ -170,117 +170,94 @@
         <!-- =============================================================== -->
         <div id="box-yes-pain-flow" class="hidden space-y-3.5">
 
-        <!-- 1. Sexo y Edad -->
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold mb-1">1. Sexo biológico</label>
-            <select id="inp-sex" onchange="onSexChange()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-              <option value="mujer">Mujer</option>
-              <option value="varon">Hombre</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold mb-1">Grupo de Edad</label>
-            <select id="inp-age" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-              <option value="adulto">56 a 74 años</option>
-              <option value="joven_mujer">&le; 55 años o Periparto</option>
-              <option value="anciano">&ge; 75 años</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Cuadro Dinámico de Características del Dolor en la Mujer (Solo visible si es Mujer) -->
-        <div id="box-mujer-info" class="p-3 rounded-lg border text-xs leading-relaxed" style="background-color: #FBE4E4; border-color: #D98282; color: #1E2323;">
-          <div class="font-bold" style="color: #9C1F1F;">🚺 Características del Dolor Torácico en la Mujer:</div>
-          <p id="txt-mujer-info" class="mt-0.5"></p>
-        </div>
-
-        <!-- 2. ECG en <= 10 min -->
-        <div>
-          <label class="block text-xs font-bold mb-1">2. ECG de 12 derivaciones en &le; 10 min</label>
-          <select id="inp-ecg" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-            <option value="normal">Normal o sin cambios isquémicos agudos</option>
-            <option value="scacest">🔴 Elevación persistente del ST o Equivalente</option>
-            <option value="dinamico">🟠 Descenso del ST &ge; 0,5 mm o cambios dinámicos ST / onda T</option>
-          </select>
-        </div>
-
-        <!-- 3. Situación Clínica Actual (Desaparece si es SCACEST) -->
-        <div id="box-instability">
-          <label class="block text-xs font-bold mb-1">3. Situación Clínica y Hemodinámica Actual</label>
-          <select id="inp-instability" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-            <option value="estable">Estable hemodinámicamente y dolor controlado</option>
-            <option value="inestable">🔴 Inestable: Dolor refractario, IC aguda, Shock o TV/FV</option>
-            <option value="secundario">🟠 Causa secundaria activa: taquiarritmia, anemia severa, hipoxemia o sepsis</option>
-          </select>
-        </div>
-
-        <!-- 4. Troponina I Ultrasensible (Solo aparece cuando ECG es normal y paciente estable) -->
-        <div id="box-troponin" class="p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold">4. Troponina I Ultrasensible hs-cTnI en ng/L</span>
-            <span id="badge-p99" class="text-xs font-bold px-2 py-0.5 rounded" style="background-color: #E6F4F1; color: #0C7860;">Umbral Mujer: &gt; 15,6 ng/L</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2.5">
+          <!-- 1. Sexo y Edad / Situación Funcional -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs text-[var(--muted-foreground)] mb-1">Muestra 0 h basal</label>
-              <input type="number" id="inp-ctn0" value="12" min="0" step="0.1" oninput="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-bold" />
+              <label class="block text-xs font-bold mb-1">1. Sexo biológico</label>
+              <select id="inp-sex" onchange="onSexChange()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
+                <option value="mujer">Mujer</option>
+                <option value="varon">Hombre</option>
+              </select>
             </div>
-            <div id="box-ctn2-col">
-              <label class="block text-xs text-[var(--muted-foreground)] mb-1">Muestra a las 2 h</label>
-              <input type="number" id="inp-ctn2" value="28" min="0" step="0.1" oninput="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-bold" />
+            <div>
+              <label class="block text-xs font-bold mb-1">Edad y Situación Funcional</label>
+              <select id="inp-age" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
+                <option value="adulto">56 a 74 años</option>
+                <option value="joven_mujer">&le; 55 años o Periparto</option>
+                <option value="anciano">&ge; 75 años con Barthel &ge; 30</option>
+                <option value="fragil_barthel">&gt; 80 años con Barthel &lt; 30</option>
+              </select>
             </div>
           </div>
-          <div id="ctn-interpretation" class="text-xs font-semibold"></div>
 
-          <!-- Sub-bloque de Clínica Anginosa (SOLO aparece cuando la Troponina es negativa) -->
-          <div id="box-angina-sub" class="pt-2 border-t border-[var(--border)]">
-            <label class="block text-xs font-bold mb-1">Características clínicas del dolor y Escala HEART</label>
-            <select id="inp-angina" onchange="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-semibold">
-              <option value="no">🟢 Dolor no anginoso y escala HEART 0–3</option>
-              <option value="intermedio">🟠 Dolor dudoso o escala HEART 4–6</option>
-              <option value="inestable">🟠 Angina típica inestable o escala HEART &ge; 7</option>
-            </select>
-            <div id="txt-angina-helper" class="mt-2 p-2 rounded text-xs leading-snug" style="background-color: #F4F6F6; color: #2D3436;"></div>
+          <!-- Cuadro Dinámico de Características del Dolor en la Mujer (Solo visible si es Mujer) -->
+          <div id="box-mujer-info" class="p-3 rounded-lg border text-xs leading-relaxed" style="background-color: #FBE4E4; border-color: #D98282; color: #1E2323;">
+            <div class="font-bold" style="color: #9C1F1F;">🚺 Características del Dolor Torácico en la Mujer:</div>
+            <p id="txt-mujer-info" class="mt-0.5"></p>
           </div>
-        </div>
 
-        <!-- 5. Horario, Función Renal y Riesgo de Sangrado (Solo aparecen los que influyen en el paciente actual) -->
-        <div id="box-step5-container" class="space-y-3">
-          <div id="box-window-col">
-            <label class="block text-xs font-bold mb-1">5. Momento de Ingreso en Urgencias</label>
-            <select id="inp-window" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-              <option value="semana">🟠 Domingo tarde/noche a Jueves y Viernes por la mañana</option>
-              <option value="finde">🟢 Viernes por la tarde, Sábado y Domingo por la mañana</option>
+          <!-- 2. ECG en <= 10 min -->
+          <div>
+            <label class="block text-xs font-bold mb-1">2. ECG de 12 derivaciones en &le; 10 min</label>
+            <select id="inp-ecg" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
+              <option value="normal">Normal o sin cambios isquémicos agudos</option>
+              <option value="scacest">🔴 Elevación persistente del ST o Equivalente</option>
+              <option value="dinamico">🟠 Descenso del ST &ge; 0,5 mm o cambios dinámicos ST / onda T</option>
             </select>
           </div>
 
-          <div id="box-renal-col">
-            <label class="block text-xs font-bold mb-1">Función Renal</label>
-            <select id="inp-renal" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-              <option value="normal">Filtrado glomerular &ge; 30 ml/min</option>
-              <option value="severa">Filtrado glomerular &lt; 30 ml/min</option>
+          <!-- 3. Situación Clínica Actual (Desaparece si es SCACEST) -->
+          <div id="box-instability">
+            <label class="block text-xs font-bold mb-1">3. Situación Clínica y Hemodinámica Actual</label>
+            <select id="inp-instability" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
+              <option value="estable">Estable hemodinámicamente y dolor controlado</option>
+              <option value="inestable">🔴 Inestable: Dolor refractario, IC aguda, Shock o TV/FV</option>
+              <option value="secundario">🟠 Causa secundaria activa: taquiarritmia, anemia severa, hipoxemia o sepsis</option>
             </select>
           </div>
 
-          <div id="box-bleed-col">
-            <label class="block text-xs font-bold mb-1" id="lbl-bleed-title">Perfil de Riesgo Hemorrágico / Anticoagulación Oral</label>
-            <select id="inp-bleed" onchange="evaluateProtocol()" class="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs font-semibold">
-              <option value="bajo">Bajo riesgo de sangrado y sin anticoagulación oral</option>
-              <option value="alto">Alto riesgo de sangrado, toma de ACO o sospecha quirúrgica</option>
-            </select>
+          <!-- 4. Troponina I Ultrasensible (Solo aparece cuando ECG es normal y paciente estable) -->
+          <div id="box-troponin" class="p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold">4. Troponina I Ultrasensible hs-cTnI en ng/L</span>
+              <span id="badge-p99" class="text-xs font-bold px-2 py-0.5 rounded" style="background-color: #E6F4F1; color: #0C7860;">Umbral Mujer: &gt; 15,6 ng/L</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs text-[var(--muted-foreground)] mb-1">Muestra 0 h basal</label>
+                <input type="number" id="inp-ctn0" value="12" min="0" step="0.1" oninput="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-bold" />
+              </div>
+              <div id="box-ctn2-col">
+                <label class="block text-xs text-[var(--muted-foreground)] mb-1">Muestra a las 2 h</label>
+                <input type="number" id="inp-ctn2" value="14" min="0" step="0.1" oninput="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-bold" />
+              </div>
+            </div>
+            <div id="ctn-interpretation" class="text-xs font-semibold"></div>
+
+            <!-- Sub-bloque de Criterios de Angina Inestable (SOLO aparece cuando no hay curva aguda de troponina) -->
+            <div id="box-angina-sub" class="pt-2.5 border-t border-[var(--border)] space-y-2">
+              <label class="block text-xs font-bold">
+                5. ¿Cumple alguno de los 3 Criterios de Angina Inestable en Urgencias?
+              </label>
+              <select id="inp-angina" onchange="evaluateProtocol()" class="w-full rounded border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-xs font-semibold">
+                <option value="no">🟢 NO — No cumple criterios de Angina Inestable</option>
+                <option value="criterio1">🟠 SÍ (Criterio 1): Dolor opresivo de repetición (&gt;1 episodio) con menor umbral de esfuerzo o en reposo</option>
+                <option value="criterio2">🟠 SÍ (Criterio 2): Dolor opresivo de repetición con los esfuerzos de inicio hace &lt; 2 meses</option>
+                <option value="criterio3">🟠 SÍ (Criterio 3): Único episodio con múltiples características anginosas (opresivo + irradiación típica + cortejo vegetativo)</option>
+              </select>
+              <div id="txt-angina-helper" class="p-2.5 rounded-lg border text-xs leading-relaxed" style="background-color: #F4F6F6; border-color: #CBE0DB; color: #1E2323;"></div>
+            </div>
           </div>
-        </div>
 
         </div><!-- Fin #box-yes-pain-flow -->
       </div>
 
-      <!-- Panel Derecho: Resultado Operativo Personalizado (Sin opciones de otros perfiles) -->
+      <!-- Panel Derecho: Resultado Operativo Personalizado -->
       <div class="lg:col-span-6 space-y-4">
         <div id="result-card" class="rounded-xl border-2 p-4 md:p-5 shadow-sm space-y-3.5">
-          <div id="res-banner" class="rounded-lg p-3 text-white font-bold text-sm md:text-base flex items-center justify-between">
+          <div id="res-banner" class="rounded-lg p-3 text-white font-bold text-sm md:text-base flex items-center justify-between gap-2">
             <span id="res-title">CLASIFICACIÓN</span>
-            <span id="res-timing-badge" class="text-xs px-2.5 py-1 rounded bg-black/25">TIMING</span>
+            <span id="res-timing-badge" class="text-xs px-2.5 py-1 rounded bg-black/25 shrink-0">TIMING</span>
           </div>
 
           <!-- Perfil activo resumido -->
@@ -294,26 +271,26 @@
 
           <!-- Antiagregación -->
           <div class="p-3 rounded-lg bg-white/80 dark:bg-black/20 border border-black/10 space-y-1">
-            <div class="text-xs font-bold uppercase tracking-wide opacity-75">💊 1. Antiagregación Plaquetaria Exacta</div>
+            <div class="text-xs font-bold uppercase tracking-wide opacity-75">💊 1. Antiagregación Plaquetaria en Urgencias</div>
             <div id="res-antiplatelet" class="text-xs md:text-sm"></div>
           </div>
 
           <!-- Anticoagulación -->
           <div class="p-3 rounded-lg bg-white/80 dark:bg-black/20 border border-black/10 space-y-1">
-            <div class="text-xs font-bold uppercase tracking-wide opacity-75">💉 2. Anticoagulación Parenteral Exacta</div>
+            <div class="text-xs font-bold uppercase tracking-wide opacity-75">💉 2. Anticoagulación y Protocolo UCO / Sala</div>
             <div id="res-anticoag" class="text-xs md:text-sm"></div>
           </div>
 
           <!-- Claves específicas de este paciente -->
           <div id="res-special-box" class="p-3 rounded-lg bg-white/90 dark:bg-black/30 border border-black/15 space-y-1">
-            <div class="text-xs font-bold uppercase tracking-wide" style="color: #0C7860;">📌 Indicaciones Adicionales para este Paciente</div>
+            <div class="text-xs font-bold uppercase tracking-wide" style="color: #0C7860;">📌 Indicaciones Específicas para este Paciente</div>
             <div id="res-special" class="text-xs"></div>
           </div>
 
           <!-- Nota SBAR Generada para Copiar -->
           <div class="pt-1">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold">📋 Nota Clínica Personalizada para Historia / Comentario con Cardiología:</span>
+              <span class="text-xs font-bold">📋 Nota Clínica Personalizada para Historia Electrónica:</span>
               <button onclick="copySbar()" id="btn-copy" class="px-2.5 py-1 rounded text-xs font-bold text-white transition" style="background-color: #0C7860;">
                 Copiar Nota
               </button>
@@ -325,99 +302,56 @@
     </div>
 
     <!-- =================================================================== -->
-    <!-- PESTAÑA 2: ESCALA HEART (TROPONINA -) Y ESCALA GRACE (SCA +)        -->
+    <!-- PESTAÑA 2: CRITERIOS DE ANGINA INESTABLE Y ESCALA GRACE (ESC 2023)  -->
     <!-- =================================================================== -->
     <div id="tab-grace" class="hidden space-y-5">
 
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm">
-        <div class="p-3 rounded-lg text-white font-bold text-sm mb-3" style="background-color: #0C7860;">
-          ¿Qué escala usar en cada momento según las Guías ESC 2023? (HEART vs. GRACE)
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed">
-          <div class="p-3.5 rounded-lg border" style="background-color: #E8F5E9; border-color: #2E7D32; color: #1E2323;">
-            <div class="font-bold text-sm" style="color: #2E7D32;">1. Si la Troponina es NEGATIVA &rarr; Escala HEART + Clínica de Angina</div>
-            <p class="mt-1">
-              • El <strong>Rule-Out bioquímico ESC 0h/2h</strong> (hs-cTnI &le; p99 sin delta + ECG normal) descarta el infarto agudo (IAM) con un VPN &gt; 99,5%.<br/>
-              • Para valorar si el paciente con troponina negativa tiene una <strong>Angina Inestable</strong> o riesgo de placa obstructiva, la escala validada en Urgencias es el <strong>HEART score (0–10 puntos)</strong>:<br/>
-              &nbsp;&nbsp;- <strong>HEART 0–3 pt:</strong> Riesgo MACE &lt; 1% &rarr; <strong>Alta directa segura</strong>.<br/>
-              &nbsp;&nbsp;- <strong>HEART 4–6 pt:</strong> Riesgo intermedio &rarr; Valorar observación / Angio-TC / prueba de isquemia.<br/>
-              &nbsp;&nbsp;- <strong>HEART &ge; 7 pt o Angina Inestable típica en reposo:</strong> Alto riesgo &rarr; <strong>Comentar con el Cardiólogo de Guardia</strong>.
-            </p>
-          </div>
-          <div class="p-3.5 rounded-lg border" style="background-color: #FEF5E7; border-color: #B4690E; color: #1E2323;">
-            <div class="font-bold text-sm" style="color: #B4690E;">2. ¿Para qué se calcula el GRACE según las Guías ESC 2023 (Clase IIa-B)?</div>
-            <p class="mt-1">
-              El score <strong>GRACE NO sirve para diagnosticar un dolor torácico inespecífico</strong> (porque la edad y la creatinina dan &gt;140 en ancianos sin patología coronaria). <strong>Se calcula una vez que YA se ha diagnosticado un SCA (NSTEMI o Angina Inestable verdadera) para dos objetivos en las Guías ESC 2023:</strong><br/>
-              &nbsp;&nbsp;<strong>A) Estratificación pronóstica:</strong> Estimar mortalidad intrahospitalaria y a 6 meses.<br/>
-              &nbsp;&nbsp;<strong>B) Decidir Cateterismo Temprano (&lt; 24 h) en la Angina Inestable (Tabla 5 ESC 2023):</strong> Si un paciente diagnosticado de Angina Inestable (con troponina negativa) tiene un <strong>GRACE &gt; 140</strong>, cumple criterio de <strong>Alto Riesgo</strong> para coronariografía en &lt; 24 h.
-            </p>
-          </div>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <!-- Calculadora 1: HEART Score -->
-        <div class="lg:col-span-6 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold" style="color: #0C7860;">A. Calculadora HEART Score (Dolor Torácico en Urgencias)</h3>
-          <div class="space-y-2.5 text-xs">
-            <div>
-              <label class="block font-bold mb-1">H — Historia Clínica</label>
-              <select id="h-hist" onchange="calcHeart()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                <option value="0">0 pt — Poco sospechosa (punzante, postural, pleurítico, segundos)</option>
-                <option value="1" selected>1 pt — Moderadamente sospechosa</option>
-                <option value="2">2 pt — Altamente sospechosa (Angina típica opresiva retroesternal)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold mb-1">E — Electrocardiograma (ECG)</label>
-              <select id="h-ecg" onchange="calcHeart()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                <option value="0" selected>0 pt — Normal</option>
-                <option value="1">1 pt — Alteración inespecífica de repolarización / BRI / HVI</option>
-                <option value="2">2 pt — Desviación significativa del ST / ondas T isquémicas</option>
-              </select>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block font-bold mb-1">A — Edad</label>
-                <select id="h-age" onchange="calcHeart()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                  <option value="0">0 pt — &lt; 45 años</option>
-                  <option value="1" selected>1 pt — 45 a 64 años</option>
-                  <option value="2">2 pt — &ge; 65 años</option>
-                </select>
-              </div>
-              <div>
-                <label class="block font-bold mb-1">T — Troponina (hs-cTnI)</label>
-                <select id="h-trop" onchange="calcHeart()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                  <option value="0" selected>0 pt — &le; límite normal p99</option>
-                  <option value="1">1 pt — 1 a 3 veces el límite p99</option>
-                  <option value="2">2 pt — &gt; 3 veces el límite p99</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label class="block font-bold mb-1">R — Factores de Riesgo CV (HTA, DM, Dislipemia, Tabaco, Obesidad, AF)</label>
-              <select id="h-risk" onchange="calcHeart()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                <option value="0">0 pt — Sin factores de riesgo conocidos</option>
-                <option value="1" selected>1 pt — 1 o 2 factores de riesgo</option>
-                <option value="2">2 pt — &ge; 3 factores o enfermedad aterosclerótica previa</option>
-              </select>
-            </div>
+        <!-- Bloque Izquierdo: Criterios Oficiales de Angina Inestable CHGUV + Matiz Mujer + Barthel < 30 -->
+        <div class="lg:col-span-6 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm space-y-3.5">
+          <div class="p-3 rounded-lg text-white font-bold text-sm" style="background-color: #0C7860;">
+            A. Definición Operativa de Angina Inestable en Urgencias (CHGUV)
           </div>
-          <div id="heart-result-box" class="p-3.5 rounded-xl border-2 flex items-center justify-between" style="background-color: #E8F5E9; border-color: #2E7D32; color: #1E2323;">
-            <div>
-              <div class="text-xs font-bold uppercase">Puntuación HEART</div>
-              <div id="heart-score-text" class="text-lg font-bold">3 puntos — BAJO RIESGO (0–3)</div>
-              <div id="heart-action-text" class="text-xs mt-0.5">Riesgo de MACE &lt; 1%: Alta directa si hs-cTnI 0h/2h es negativa.</div>
+          <div class="p-3.5 rounded-lg border text-xs leading-relaxed space-y-2" style="background-color: #E6F4F1; border-color: #0C7860; color: #1E2323;">
+            <div class="font-bold text-sm" style="color: #075241;">
+              En pacientes con seriación hs-cTnI negativa o plana (&Delta; &lt; 20%) y ECG sin isquemia aguda, SOLO se considera Angina Inestable si cumple 1 de estos 3 criterios (descartadas otras causas):
             </div>
-            <button onclick="applyHeartToAlgo()" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white shrink-0" style="background-color: #0C7860;">
-              Llevar al Algoritmo &rarr;
-            </button>
+            <ol class="list-decimal pl-5 space-y-1.5">
+              <li>
+                <strong>Angina in crescendo o en reposo recurrente:</strong> Dolor torácico opresivo de repetición (&gt; 1 episodio) con disminución del umbral de esfuerzo de aparición o con clínica en reposo.
+              </li>
+              <li>
+                <strong>Angina de reciente comienzo (de novo):</strong> Dolor torácico opresivo de repetición con los esfuerzos (o estrés emocional) de inicio hace <strong>menos de 2 meses</strong>.
+              </li>
+              <li>
+                <strong>Episodio único de alta probabilidad anginosa:</strong> Único episodio de dolor torácico con <strong>múltiples características anginosas simultáneas</strong>: carácter opresivo + irradiación típica (miembros superiores, mandíbula o región interescapular) + <strong>cortejo vegetativo asociado</strong> (sudoración fría, náuseas/vómitos o disnea súbita).
+              </li>
+            </ol>
+          </div>
+
+          <div class="p-3.5 rounded-lg border text-xs leading-relaxed" style="background-color: #FBE4E4; border-color: #D98282; color: #1E2323;">
+            <div class="font-bold" style="color: #9C1F1F;">🚺 Matiz Clínico Obligatorio en la Mujer (Consenso ESC):</div>
+            <p class="mt-1">
+              En la mujer el dolor opresivo retroesternal asocia con mayor frecuencia irradiación a <strong>región interescapular (espalda), mandíbula, cuello o epigastrio</strong>, acompañada de <strong>disnea brusca, náuseas o fatiga extrema</strong>. En mujeres &le; 55 años o periparto, sospechar <strong>Disección Coronaria Espontánea (SCAD)</strong>.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-lg border text-xs leading-relaxed" style="background-color: #E8F5E9; border-color: #2E7D32; color: #1E2323;">
+            <div class="font-bold" style="color: #2E7D32;">👴 Regla en &gt; 80 años con Dependencia Severa (Barthel &lt; 30):</div>
+            <p class="mt-1">
+              Los pacientes &gt; 80 años sin elevación del ST con <strong>Índice de Barthel &lt; 30</strong> que se encuentren <strong>sin angina tras 5 horas de observación</strong> en Urgencias serán dados de alta desde Urgencias con <strong>AAS + Clopidogrel + Bisoprolol o Amlodipino + parche de NTG 5 mg</strong> (ajustado a PA y FC), evitando ingresos fútiles.
+            </p>
           </div>
         </div>
 
-        <!-- Calculadora 2: GRACE Score -->
+        <!-- Bloque Derecho: Calculadora GRACE Score -->
         <div class="lg:col-span-6 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold" style="color: #B4690E;">B. Calculadora GRACE (En pacientes con diagnóstico de SCA / Angina Inestable)</h3>
+          <div class="p-3 rounded-lg text-white font-bold text-sm" style="background-color: #B4690E;">
+            B. Calculadora GRACE (Solo en pacientes YA diagnosticados de SCA)
+          </div>
+          <p class="text-xs leading-relaxed">
+            <strong>¿Para qué se calcula el GRACE según las Guías ESC 2023 (Clase IIa-B)?</strong> No sirve para ingresar dolores inespecíficos con troponina negativa. Se utiliza una vez diagnosticado el SCASEST para estimar el pronóstico e identificar <strong>GRACE &gt; 140</strong> como criterio de Alto Riesgo.
+          </p>
           <div class="grid grid-cols-2 gap-2.5 text-xs">
             <div>
               <label class="block font-bold mb-1">Edad (años)</label>
@@ -438,35 +372,35 @@
             <div>
               <label class="block font-bold mb-1">Clase Killip al ingreso</label>
               <select id="g-killip" onchange="calcGrace()" class="w-full rounded border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 font-semibold">
-                <option value="0">Killip I (Sin IC - 0 pt)</option>
-                <option value="20">Killip II (Crepitantes - 20 pt)</option>
-                <option value="39">Killip III (EAP - 39 pt)</option>
-                <option value="59">Killip IV (Shock - 59 pt)</option>
+                <option value="0">Killip I — Sin insuficiencia cardíaca</option>
+                <option value="20">Killip II — Crepitantes / 3.er ruido</option>
+                <option value="39">Killip III — Edema agudo de pulmón</option>
+                <option value="59">Killip IV — Shock cardiogénico</option>
               </select>
             </div>
             <div class="space-y-1 pt-1">
               <label class="flex items-center gap-1.5 font-semibold cursor-pointer">
-                <input type="checkbox" id="g-arrest" onchange="calcGrace()" class="rounded" /> Parada al ingreso (+39)
+                <input type="checkbox" id="g-arrest" onchange="calcGrace()" class="rounded" /> Parada al ingreso
               </label>
               <label class="flex items-center gap-1.5 font-semibold cursor-pointer">
-                <input type="checkbox" id="g-st" checked onchange="calcGrace()" class="rounded" /> Desviación ST (+28)
+                <input type="checkbox" id="g-st" checked onchange="calcGrace()" class="rounded" /> Desviación dinámica ST
               </label>
               <label class="flex items-center gap-1.5 font-semibold cursor-pointer">
-                <input type="checkbox" id="g-enz" checked onchange="calcGrace()" class="rounded" /> hs-cTnI &gt; p99 (+14)
+                <input type="checkbox" id="g-enz" checked onchange="calcGrace()" class="rounded" /> Curva aguda hs-cTnI
               </label>
             </div>
           </div>
 
           <div id="grace-result-box" class="p-3.5 rounded-xl border-2" style="background-color: #FEF5E7; border-color: #B4690E; color: #1E2323;">
-            <div class="text-xs font-bold uppercase">Puntuación GRACE Estimada (en SCA confirmado)</div>
+            <div class="text-xs font-bold uppercase">Puntuación GRACE Estimada</div>
             <div id="grace-score-text" class="text-lg font-bold mt-0.5">142 puntos — ALTO RIESGO (&gt; 140)</div>
-            <div id="grace-action-text" class="text-xs mt-0.5">En un paciente con diagnóstico de SCASEST (o Angina Inestable verdadera), GRACE &gt; 140 indica estrategia invasiva temprana (&lt; 24 h).</div>
+            <div id="grace-action-text" class="text-xs mt-0.5">En un paciente con diagnóstico confirmado de SCASEST, GRACE &gt; 140 indica Alto Riesgo.</div>
           </div>
           <div class="flex items-center gap-3 pt-2 border-t border-[var(--border)]">
             <img src="data:image/png;base64,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" alt="QR GRACE" class="h-24 rounded border border-[var(--border)] bg-white p-1 shrink-0" />
             <div class="text-xs space-y-1">
               <div class="font-bold" style="color:#0C7860;">Escanea el código QR con el móvil o accede a MDCalc:</div>
-              <div>🔗 Calculadoras externas MDCalc: <a href="https://www.mdcalc.com/calc/1099/grace-acs-risk-mortality-calculator" target="_blank" class="underline font-bold" style="color: #0C7860;">mdcalc.com/calc/1099 (GRACE)</a> · <a href="https://www.mdcalc.com/calc/1752/heart-score-major-cardiac-events" target="_blank" class="underline font-bold" style="color: #0C7860;">mdcalc.com/calc/1752 (HEART)</a></div>
+              <div>🔗 Calculadora oficial externa: <a href="https://www.mdcalc.com/calc/1099/grace-acs-risk-mortality-calculator" target="_blank" class="underline font-bold" style="color: #0C7860;">mdcalc.com/calc/1099 (GRACE 2.0)</a></div>
             </div>
           </div>
         </div>
@@ -474,7 +408,7 @@
     </div>
 
     <!-- =================================================================== -->
-    <!-- PESTAÑA 3: TABLA RÁPIDA DE BOLSILLO (PÁGINA 1 DEL PROTOCOLO)        -->
+    <!-- PESTAÑA 3: TABLA RÁPIDA DE GUARDIA (HOJA DE RUTA CHGUV)             -->
     <!-- =================================================================== -->
     <div id="tab-resumen" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm overflow-x-auto">
       <h2 class="text-base font-bold mb-3" style="color: #0C7860;">Hoja de Ruta de Acceso Inmediato en Guardia — CHGUV</h2>
@@ -482,47 +416,47 @@
         <thead>
           <tr style="background-color: #0C7860; color: #FFFFFF;">
             <th class="p-2.5 border border-white/20">Escenario Clínico</th>
-            <th class="p-2.5 border border-white/20">Ubicación Física CHGUV</th>
-            <th class="p-2.5 border border-white/20">Antiagregación en Urgencias</th>
-            <th class="p-2.5 border border-white/20">Anticoagulación en Urgencias</th>
-            <th class="p-2.5 border border-white/20">Timing Cateterismo y Regla</th>
+            <th class="p-2.5 border border-white/20">Ubicación y Circuito CHGUV</th>
+            <th class="p-2.5 border border-white/20">Fármacos en Urgencias</th>
+            <th class="p-2.5 border border-white/20">Anticoagulación y 2.º Antiagregante</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-[var(--border)]">
-          <tr style="background-color: #FBE4E4; color: #1E2323;">
-            <td class="p-2.5 font-bold" style="color: #9C1F1F;">🔴 1. SCACEST / Equivalentes</td>
-            <td class="p-2.5 font-semibold">Box Críticos &rarr; Sala Hemodinámica &rarr; UCC</td>
-            <td class="p-2.5"><strong>AAS 300 mg</strong> + <strong>Prasugrel 60 mg</strong> o <strong>Ticagrelor 180 mg</strong> (Clopidogrel 600 mg si &ge;75a/ACO)</td>
-            <td class="p-2.5"><strong>HNF 70-100 UI/kg i.v.</strong><br/>(PROHIBIDO Fondaparinux)</td>
-            <td class="p-2.5"><strong>INMEDIATO (&lt; 90 min ICP 1.ª)</strong></td>
-          </tr>
-          <tr style="background-color: #FBE4E4; color: #1E2323;">
-            <td class="p-2.5 font-bold" style="color: #9C1F1F;">🔴 2. SCASEST MUY ALTO RIESGO</td>
-            <td class="p-2.5 font-semibold">Box Críticos / Obs. A &rarr; Hemodinámica &rarr; UCC</td>
-            <td class="p-2.5"><strong>SOLO AAS 300 mg</strong><br/>(Sin 2.º antiagregante pre-sala)</td>
-            <td class="p-2.5"><strong>HNF 60-70 UI/kg i.v.</strong> (máx 5.000 UI)</td>
-            <td class="p-2.5"><strong>EMERGENTE (&lt; 2 HORAS)</strong> 24/7</td>
-          </tr>
           <tr style="background-color: #FEF5E7; color: #1E2323;">
-            <td class="p-2.5 font-bold" style="color: #B4690E;">🟠 3A. SCASEST ALTO RIESGO<br/>Dom tarde a Jueves y Vie mañana</td>
-            <td class="p-2.5 font-semibold">Comentar Cardiología: Obs. A &rarr; Planta Telemetría / UCC</td>
-            <td class="p-2.5"><strong>SOLO AAS 300 mg</strong><br/>(PROHIBIDO P2Y12 pre-cate; se carga en Sala)</td>
-            <td class="p-2.5"><strong>Enoxaparina s.c.</strong> (1 mg/kg/12h; 0,75 mg/kg/12h si &ge;75a; HNF i.v. si FGe &lt; 30)</td>
-            <td class="p-2.5"><strong>TEMPRANO (&lt; 24 HORAS)</strong></td>
+            <td class="p-2.5 font-bold" style="color: #8A4F08;">🚫 0. Troponina elevada SIN dolor torácico</td>
+            <td class="p-2.5 font-semibold">Boxes Urgencias / Servicio de la causa primaria (NO llamar a Cardiología de rutina)</td>
+            <td class="p-2.5"><strong>NO dar Doble Antiagregación</strong> (tratar FA, sepsis, IC, anemia, ERC o TEP)</td>
+            <td class="p-2.5"><strong>NO anticoagular por protocolo SCA</strong></td>
+          </tr>
+          <tr style="background-color: #FBE4E4; color: #1E2323;">
+            <td class="p-2.5 font-bold" style="color: #9C1F1F;">🔴 1. SCACEST / Código Infarto</td>
+            <td class="p-2.5 font-semibold">Box Críticos &rarr; Sala Hemodinámica (&lt; 90 min) &rarr; UCC</td>
+            <td class="p-2.5"><strong>AAS 300 mg</strong></td>
+            <td class="p-2.5"><strong>En Sala de Hemodinámica:</strong> Bolo de HNF y 2.º antiagregante (evitar dobles dosis en Urgencias)</td>
+          </tr>
+          <tr style="background-color: #FBE4E4; color: #1E2323;">
+            <td class="p-2.5 font-bold" style="color: #9C1F1F;">🔴 2. SCASEST MUY ALTO RIESGO (&lt; 2 h)</td>
+            <td class="p-2.5 font-semibold">Box Críticos / Obs. A &rarr; Avisar Cardiólogo &rarr; Hemodinámica &rarr; UCC</td>
+            <td class="p-2.5"><strong>SOLO AAS 300 mg</strong></td>
+            <td class="p-2.5"><strong>En Sala de Hemodinámica:</strong> HNF y 2.º antiagregante tras ver anatomía</td>
           </tr>
           <tr style="background-color: #E6F4F1; color: #1E2323;">
-            <td class="p-2.5 font-bold" style="color: #0C7860;">🟢 3B. SCASEST ALTO RIESGO<br/>Vie tarde, Sáb y Dom mañana</td>
-            <td class="p-2.5 font-semibold">Comentar Cardiología: Obs. A &rarr; Planta Telemetría / UCC</td>
-            <td class="p-2.5"><strong>AAS 300 mg</strong> + Individualizar:<br/>• &ge;75a / HBR / Qx: <strong>SOLO AAS</strong><br/>• &lt;75a No-HBR + NSTEMI: <strong>+ Ticagrelor 180 / Clopidogrel</strong></td>
-            <td class="p-2.5"><strong>Fondaparinux 2,5 mg/24h s.c.</strong> (1.ª elección OASIS-5)</td>
-            <td class="p-2.5"><strong>DIFERIDO AL LUNES (&gt; 24 h)</strong><br/>⚠️ <strong>Bolo HNF 70-85 UI/kg i.v. obligatorio el lunes en Sala</strong></td>
+            <td class="p-2.5 font-bold" style="color: #0C7860;">🟠 3. IAMSEST (curva aguda) o Angina Inestable (3 criterios)</td>
+            <td class="p-2.5 font-semibold">Observación A &rarr; Comentar con Cardiólogo de Guardia &rarr; Planta / UCC</td>
+            <td class="p-2.5"><strong>SOLO AAS 300 mg</strong></td>
+            <td class="p-2.5"><strong>Protocolo UCO CHGUV:</strong> Fondaparinux (Arixtra®) 2,5 mg/24h s.c. pautado al ingreso; 2.º antiagregante solo si puente</td>
           </tr>
           <tr style="background-color: #E8F5E9; color: #1E2323;">
-            <td class="p-2.5 font-bold" style="color: #2E7D32;">🟢 4. BAJO RIESGO (Rule-Out)</td>
-            <td class="p-2.5 font-semibold">Boxes Generales Urgencias</td>
-            <td class="p-2.5">No precisa</td>
-            <td class="p-2.5">No precisa</td>
-            <td class="p-2.5"><strong>ALTA DIRECTA</strong> (hs-cTnI 0h/2h &le; p99 y HEART &le; 3)</td>
+            <td class="p-2.5 font-bold" style="color: #2E7D32;">🟢 4. IAMSEST en &gt; 80 años con Barthel &lt; 30</td>
+            <td class="p-2.5 font-semibold">Observación de Urgencias durante 5 h &rarr; Si sin angina: <strong>Alta desde Urgencias</strong></td>
+            <td class="p-2.5"><strong>AAS + Clopidogrel</strong> + Bisoprolol/Amlodipino + parche NTG 5 mg</td>
+            <td class="p-2.5">Manejo conservador sin ingreso ni anticoagulación parenteral de puente</td>
+          </tr>
+          <tr style="background-color: #E8F5E9; color: #1E2323;">
+            <td class="p-2.5 font-bold" style="color: #2E7D32;">🟢 5. Troponina Negativa o Plana (&Delta; &lt; 20%) sin Angina Inestable</td>
+            <td class="p-2.5 font-semibold">Boxes Generales de Urgencias &rarr; <strong>Alta / Manejo por Urgencias</strong> (NO llamar a Cardiología)</td>
+            <td class="p-2.5">No precisa antiagregación aguda</td>
+            <td class="p-2.5">No precisa anticoagulación</td>
           </tr>
         </tbody>
       </table>
@@ -534,11 +468,11 @@
     <div id="tab-descargas" class="hidden space-y-5">
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 md:p-5 shadow-sm">
         <div class="p-3 rounded-lg text-white font-bold text-sm mb-4" style="background-color: #0C7860;">
-          📥 Centro de Descargas Oficiales del Protocolo SCA CHGUV (Formato PDF de Alta Resolución)
+          📥 Centro de Descargas Oficiales del Protocolo SCA CHGUV (Formato PDF)
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Tarjeta 1: Documento del Protocolo Completo en PDF (versión del Word en PDF) -->
+          <!-- Tarjeta 1: Documento del Protocolo Completo en PDF -->
           <div class="rounded-xl border-2 p-5 flex flex-col justify-between space-y-4" style="background-color: #E6F4F1; border-color: #0C7860; color: #1E2323;">
             <div class="space-y-2">
               <div class="inline-block px-2.5 py-0.5 rounded text-xs font-bold text-white" style="background-color: #0C7860;">
@@ -548,13 +482,13 @@
                 📄 Protocolo Unificado de Dolor Torácico y SCA — CHGUV 2026 (.PDF)
               </h3>
               <p class="text-xs leading-relaxed">
-                Versión en <strong>PDF lista para imprimir o consultar en el móvil</strong> del documento completo del protocolo institucional (Urgencias y Cardiología):
+                Documento completo en <strong>PDF</strong> del protocolo institucional de Urgencias y Cardiología del CHGUV:
               </p>
               <ul class="text-xs space-y-1 list-disc pl-4">
-                <li>Tabla maestra de Semáforo Clínico y ubicación física en el CHGUV.</li>
-                <li>Algoritmos 1 y 2 a página completa en alta resolución.</li>
-                <li>Definición de Angina Típica/Inestable, particularidades en la mujer, tabla de la Escala <strong>HEART</strong> y uso del <strong>GRACE</strong> según Guías ESC 2023.</li>
-                <li>Pauta exacta de Enoxaparina, Fondaparinux (con bolo de HNF el lunes en Sala) y doble antiagregación según día y hora de ingreso.</li>
+                <li><strong>Paso 0:</strong> Filtro de troponina elevada sin dolor torácico (Daño Miocárdico / IAM Tipo 2).</li>
+                <li><strong>Curvas de hs-cTnI:</strong> Diferenciación entre curva aguda de IAMSEST y elevación basal plana (&Delta; &lt; 20%).</li>
+                <li><strong>Los 3 Criterios de Angina Inestable en Urgencias</strong> con el matiz clínico en la mujer.</li>
+                <li><strong>Manejo en &gt; 80 años con Barthel &lt; 30</strong> y protocolo antitrombótico UCO CHGUV (Arixtra®).</li>
               </ul>
             </div>
             <div class="pt-2">
@@ -564,7 +498,7 @@
             </div>
           </div>
 
-          <!-- Tarjeta 2: Presentación de Diapositivas en PDF (versión del PPT en PDF) -->
+          <!-- Tarjeta 2: Presentación de Diapositivas en PDF -->
           <div class="rounded-xl border-2 p-5 flex flex-col justify-between space-y-4" style="background-color: #FEF5E7; border-color: #B4690E; color: #1E2323;">
             <div class="space-y-2">
               <div class="inline-block px-2.5 py-0.5 rounded text-xs font-bold text-white" style="background-color: #B4690E;">
@@ -574,13 +508,13 @@
                 📊 Presentación Diapositivas Protocolo SCA — CHGUV 2026 (.PDF)
               </h3>
               <p class="text-xs leading-relaxed">
-                Versión en <strong>PDF panorámico 16:9</strong> de la presentación de diapositivas para sesiones clínicas de Urgencias y Cardiología o consulta rápida visual:
+                Presentación panorámica 16:9 en <strong>PDF</strong> para sesiones clínicas de Urgencias y Cardiología o consulta visual rápida:
               </p>
               <ul class="text-xs space-y-1 list-disc pl-4">
-                <li><strong>Diapositiva 1:</strong> Hoja de ruta ejecutiva en 4 cuadrantes (Semáforo CHGUV).</li>
-                <li><strong>Diapositivas 2 y 3:</strong> Algoritmo 1 (Puerta de entrada y mujer) y Algoritmo 2 (Horarios y Fondaparinux/Enoxaparina).</li>
-                <li><strong>Diapositiva 4:</strong> Escalas HEART vs. GRACE con código QR escaneable y los 4 casos clínicos de Urgencias.</li>
-                <li><strong>Diapositivas 5 y 6:</strong> 5 reglas en la mujer, Checklist de traspaso y guía de esta App Interactiva.</li>
+                <li>Resumen visual en cuadrantes de todos los escenarios del protocolo CHGUV.</li>
+                <li>Algoritmos de puerta de entrada, troponinas planas vs. agudas y particularidades en la mujer.</li>
+                <li>Los 3 criterios de Angina Inestable en Urgencias y pauta conservadora en &gt; 80 años con Barthel &lt; 30.</li>
+                <li>Guía de uso del filtro de troponina sin dolor torácico y de esta aplicación interactiva.</li>
               </ul>
             </div>
             <div class="pt-2">
@@ -595,7 +529,7 @@
 
     <!-- Pie con Disclaimer Médico-Legal Permanente -->
     <div class="rounded-xl border p-3.5 text-xs leading-relaxed" style="background-color: #FEF5E7; border-color: #B4690E; color: #1E2323;">
-      <strong>⚠️ NOTA DE RESPONSABILIDAD CLÍNICA (DISCLAIMER):</strong> Este algoritmo digital es una herramienta de apoyo orientativo para facilitar la revisión de los documentos del protocolo por profesionales sanitarios del Consorci Hospital General Universitari de València (CHGUV). Las recomendaciones mostradas se basan en escenarios estándar de las Guías ESC 2023 y del protocolo institucional, pero <strong>son meramente orientativas y no sustituyen el criterio clínico individualizado del médico responsable</strong> ante las comorbilidades, contraindicaciones o evolución específica de cada paciente.
+      <strong>⚠️ NOTA DE RESPONSABILIDAD CLÍNICA (DISCLAIMER):</strong> Este algoritmo digital es una herramienta de apoyo orientativo para facilitar la revisión de los documentos del protocolo por profesionales sanitarios del Consorci Hospital General Universitari de València (CHGUV). Las recomendaciones mostradas no sustituyen el criterio clínico individualizado del médico responsable.
     </div>
 
   </div>
@@ -656,8 +590,13 @@
 
         const o3 = document.createElement('option');
         o3.value = 'anciano';
-        o3.textContent = '≥ 75 años';
+        o3.textContent = '≥ 75 años con Barthel ≥ 30';
         ageSel.appendChild(o3);
+
+        const o4 = document.createElement('option');
+        o4.value = 'fragil_barthel';
+        o4.textContent = '> 80 años con Barthel < 30';
+        ageSel.appendChild(o4);
       } else {
         const o1 = document.createElement('option');
         o1.value = 'adulto';
@@ -666,11 +605,16 @@
 
         const o2 = document.createElement('option');
         o2.value = 'anciano';
-        o2.textContent = '≥ 75 años';
+        o2.textContent = '≥ 75 años con Barthel ≥ 30';
         ageSel.appendChild(o2);
+
+        const o3 = document.createElement('option');
+        o3.value = 'fragil_barthel';
+        o3.textContent = '> 80 años con Barthel < 30';
+        ageSel.appendChild(o3);
       }
 
-      if (prevVal === 'anciano' || (prevVal === 'joven_mujer' && sex === 'mujer')) {
+      if (prevVal === 'anciano' || prevVal === 'fragil_barthel' || (prevVal === 'joven_mujer' && sex === 'mujer')) {
         ageSel.value = prevVal;
       } else {
         ageSel.value = 'adulto';
@@ -688,11 +632,8 @@
       document.getElementById('inp-ecg').value = 'normal';
       document.getElementById('inp-instability').value = 'estable';
       document.getElementById('inp-ctn0').value = 12;
-      document.getElementById('inp-ctn2').value = 28;
+      document.getElementById('inp-ctn2').value = 14;
       document.getElementById('inp-angina').value = 'no';
-      document.getElementById('inp-window').value = 'semana';
-      document.getElementById('inp-renal').value = 'normal';
-      document.getElementById('inp-bleed').value = 'bajo';
       evaluateProtocol();
     }
 
@@ -731,12 +672,12 @@
           banner.style.backgroundColor = '#9C1F1F';
           title.textContent = '🔴 SCACEST SILENTE EN ECG — ACTIVAR CÓDIGO INFARTO';
           timingBadge.textContent = 'ICP PRIMARIA < 90 MIN';
-          chip.textContent = '👤 Escenario: Elevación persistente del ST sin dolor torácico (presentación silente en anciano/diabético)';
-          loc.innerHTML = 'Pasar de inmediato a <strong>BOX DE CRÍTICOS</strong> &rarr; Avisar a <strong>Cardiología de Guardia / Hemodinámica</strong>.<br/><em>Seleccione arriba «SÍ — Consulta por Dolor Torácico / sospecha de isquemia» para abrir el ajuste exacto de dosis por edad y sexo.</em>';
-          antiplat.innerHTML = '• <strong>AAS 300 mg v.o. de carga</strong> + segundo antiagregante consensuado con Cardiología.';
-          anticoag.innerHTML = '• <strong>Heparina No Fraccionada: Bolo 70–100 UI/kg i.v.</strong>';
+          chip.textContent = '👤 Escenario: Elevación persistente del ST sin dolor torácico';
+          loc.innerHTML = 'Pasar de inmediato a <strong>BOX DE CRÍTICOS</strong> &rarr; Avisar a <strong>Cardiología de Guardia y Hemodinámica</strong> &rarr; Directo a <strong>SALA DE HEMODINÁMICA</strong>.';
+          antiplat.innerHTML = '• En Urgencias: <strong>SOLO AAS 300 mg v.o. de carga</strong>.<br/>• El 2.º antiagregante se administra en la Sala de Hemodinámica para evitar duplicidad de dosis.';
+          anticoag.innerHTML = '• El bolo de Heparina No Fraccionada pre-cateterismo se administra directamente en la <strong>Sala de Hemodinámica</strong>.';
           special.innerHTML = '• Aunque no refiera dolor torácico típico, el ascenso persistente del ST en el ECG manda sobre la ausencia de dolor.';
-          sbar.value = 'CÓDIGO INFARTO (PRESENTACIÓN SILENTE): Paciente sin dolor torácico pero con elevación persistente del ST en ECG de 12 derivaciones. Se activa a Cardiología de Guardia para ICP primaria.';
+          sbar.value = 'CÓDIGO INFARTO CHGUV: Elevación persistente del ST en ECG de 12 derivaciones. Administrado AAS 300 mg en Urgencias. Se activa a Cardiología de Guardia / Hemodinámica para ICP primaria.';
           return;
         }
 
@@ -753,28 +694,28 @@
         anticoag.innerHTML = '• ❌ <strong>NO anticoagular por protocolo de síndrome coronario agudo.</strong> Utilizar anticoagulación únicamente si la patología de base lo indica por criterio propio como Fibrilación Auricular o Tromboembolismo Pulmonar.';
 
         if (npCause === 'taqui') {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): IAM Tipo 2 / Daño Miocárdico secundario a Taquiarritmia o Bradiarritmia';
+          chip.textContent = '👤 Diagnóstico: IAM Tipo 2 / Daño Miocárdico secundario a Taquiarritmia o Bradiarritmia';
           special.innerHTML = '• <strong>Qué valorar y hacer:</strong> La elevación de hs-cTnI se debe al aumento de demanda miocárdica y acortamiento de la diástole durante la taquiarritmia.<br/>• <strong>Actuación:</strong> Controlar la frecuencia cardíaca o revertir la arritmia, corregir iones y reevaluar el ECG tras frenar la frecuencia. No requiere coronariografía urgente.';
           sbar.value = 'Elevación de hs-cTnI sin dolor torácico ni elevación del ST, secundaria a taquiarritmia/bradiarritmia activa (IAM Tipo 2 / Daño secundario según 5.ª Definición Universal de IAM). Se procede a control del ritmo/frecuencia sin doble antiagregación ni activación de protocolo SCA.';
         } else if (npCause === 'sepsis') {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): Daño Miocárdico Agudo / IAM Tipo 2 secundario a Sepsis, Infección o Hipoxemia';
+          chip.textContent = '👤 Diagnóstico: Daño Miocárdico Agudo / IAM Tipo 2 secundario a Sepsis, Infección o Hipoxemia';
           special.innerHTML = '• <strong>Qué valorar y hacer:</strong> Las citocinas inflamatorias, la fiebre, la taquicardia y la hipoxemia producen liberación directa de troponina sin trombosis coronaria.<br/>• <strong>Actuación:</strong> Oxigenoterapia, antibioterapia precoz, fluidoterapia y soporte hemodinámico de la sepsis o insuficiencia respiratoria. La doble antiagregación e ingreso en Cardiología están contraindicados.';
           sbar.value = 'Elevación de hs-cTnI sin dolor torácico ni isquemia aguda en ECG, en contexto de proceso infeccioso/séptico o hipoxemia aguda (Daño miocárdico agudo / IAM Tipo 2). Se trata la patología primaria sin iniciar doble antiagregación ni activar protocolo de SCA.';
         } else if (npCause === 'ic') {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): Daño Miocárdico Agudo por Insuficiencia Cardíaca / Sobrecarga Parietal';
+          chip.textContent = '👤 Diagnóstico: Daño Miocárdico Agudo por Insuficiencia Cardíaca / Sobrecarga Parietal';
           special.innerHTML = '• <strong>Qué valorar y hacer:</strong> El aumento de tensión parietal ventricular en la IC aguda eleva de forma constante la hs-cTnI.<br/>• <strong>Actuación:</strong> Tratamiento decongestivo con diuréticos de asa i.v., vasodilatadores si procede y ventilación no invasiva si EAP. Solicitar NT-proBNP y valorar ecocardiograma reglado sin activar código de SCASEST.';
           sbar.value = 'Elevación de hs-cTnI sin dolor torácico ni cambios dinámicos del ST, secundaria a descompensación de insuficiencia cardíaca / sobrecarga parietal ventricular. Se inicia tratamiento decongestivo sin doble antiagregación.';
         } else if (npCause === 'anemia') {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): IAM Tipo 2 por Anemia Severa, Hemorragia, Hipotensión o Crisis HTA';
+          chip.textContent = '👤 Diagnóstico: IAM Tipo 2 por Anemia Severa, Hemorragia, Hipotensión o Crisis HTA';
           special.innerHTML = '• <strong>Qué valorar y hacer:</strong> Desajuste puro entre el aporte y la demanda miocárdica de oxígeno.<br/>• <strong>Actuación:</strong> Transfusión de concentrados de hematíes si anemia severa, control del foco de sangrado, corrección de la hipotensión o control tensional progresivo en crisis hipertensiva. <strong>¡Precaución extrema: dar antiagregantes o heparina empeorará gravemente cualquier sangrado oculto!</strong>';
           sbar.value = 'Elevación de hs-cTnI sin dolor torácico, secundaria a desajuste oferta/demanda por anemia/hipotensión/crisis HTA (IAM Tipo 2). Se corrige la causa desencadenante; contraindicada la doble antiagregación y anticoagulación de SCA.';
         } else if (npCause === 'erc') {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): Daño Miocárdico Crónico por Enfermedad Renal Crónica o Cardiopatía Estructural';
+          chip.textContent = '👤 Diagnóstico: Daño Miocárdico Crónico por Enfermedad Renal Crónica o Cardiopatía Estructural';
           special.innerHTML = '• <strong>Qué valorar y hacer:</strong> Más del 50–70% de los pacientes con filtrado glomerular reducido o HVI presentan cifras basales de hs-cTnI crónicamente &gt; p99 con variación &lt; 20% entre las 0 h y las 2 h.<br/>• <strong>Actuación:</strong> Comparar con analíticas previas del paciente. Al no haber curva aguda (&Delta; &lt; 20%) ni dolor torácico, se descarta evento coronario agudo.';
           sbar.value = 'Elevación crónica estable de hs-cTnI (< 20% de variación 0h/2h) en paciente sin dolor torácico y con enfermedad renal crónica / cardiopatía estructural previa (Daño miocárdico crónico). Se descarta SCA.';
         } else {
-          chip.textContent = '👤 Diagnóstico (5.ª Def. Universal IAM): Daño Miocárdico Agudo No Coronario (TEP, Ictus, Síncope o Rabdomiólisis)';
-          special.innerHTML = '• <strong>Qué valorar y hacer:</strong> En el Tromboembolismo Pulmonar (TEP) la troponina se eleva por sobrecarga aguda del ventrículo derecho (marcador pronóstico de TEP, no de infarto coronario); en el ictus o hemorragia intracraneal se eleva por descarga catecolaminérgica.<br/>• <strong>Actuación:</strong> Si disnea súbita/taquicardia o signos de TVP, solicitar Dímero D / Angio-TC de arterias pulmonares. En ictus, manejo neurológico específico.';
+          chip.textContent = '👤 Diagnóstico: Daño Miocárdico Agudo No Coronario (TEP, Ictus, Síncope o Rabdomiólisis)';
+          special.innerHTML = '• <strong>Qué valorar y hacer:</strong> En el Tromboembolismo Pulmonar (TEP) la troponina se eleva por sobrecarga aguda del ventrículo derecho; en el ictus se eleva por descarga catecolaminérgica.<br/>• <strong>Actuación:</strong> Si disnea súbita/taquicardia o signos de TVP, solicitar Dímero D / Angio-TC de arterias pulmonares. En ictus, manejo neurológico específico.';
           sbar.value = 'Elevación de hs-cTnI sin dolor torácico en contexto de patología aguda extracoronaria (TEP / evento neurológico / síncope). Manejo dirigido a la etiología primaria sin activar protocolo de SCA.';
         }
         return;
@@ -793,15 +734,11 @@
       const ctn0 = parseFloat(document.getElementById('inp-ctn0').value) || 0;
       const ctn2 = parseFloat(document.getElementById('inp-ctn2').value) || 0;
       const angina = document.getElementById('inp-angina').value;
-      const win = document.getElementById('inp-window').value;
-      const renal = document.getElementById('inp-renal').value;
-      const bleed = document.getElementById('inp-bleed').value;
 
       const isMujer = (sex === 'mujer');
       const isAnciano = (age === 'anciano');
+      const isFragilBarthel = (age === 'fragil_barthel');
       const isJovenMujer = (age === 'joven_mujer');
-      const isRenalSevera = (renal === 'severa');
-      const isAltoSangrado = (bleed === 'alto');
 
       // 1. Cuadro de características del dolor en la mujer: solo aparece si es Mujer
       const mujerBox = document.getElementById('box-mujer-info');
@@ -817,12 +754,11 @@
         mujerBox.classList.add('hidden');
       }
 
-      // 2. Umbral de Troponina exclusivo del sexo seleccionado
+      // 2. Umbral de Troponina exclusivo del sexo seleccionado y curva dinámica
       const p99 = isMujer ? 15.6 : 34.2;
       const badgeP99 = document.getElementById('badge-p99');
       badgeP99.textContent = isMujer ? 'Umbral Mujer: > 15,6 ng/L' : 'Umbral Hombre: > 34,2 ng/L';
 
-      // Si hs-cTnI 0h >= 64 ng/L ya es Rule-In directo sin necesitar la 2h
       const boxCtn2Col = document.getElementById('box-ctn2-col');
       const isDirect0hRuleIn = (ctn0 >= 64);
       if (isDirect0hRuleIn) {
@@ -833,101 +769,72 @@
 
       const deltaAbs = Math.abs(ctn2 - ctn0);
       const deltaRel = ctn0 > 0 ? (deltaAbs / ctn0) * 100 : 0;
-      const isPositiveCtn = isDirect0hRuleIn || ((ctn0 > p99 || ctn2 > p99) && ((ctn0 <= p99 && deltaAbs >= 5) || (ctn0 > p99 && deltaRel >= 20) || deltaAbs >= 15));
+
+      // Curva aguda positiva de IAMSEST: requiere superar p99 Y cambio dinámico significativo (variación >= 20% con delta >= 5 ng/L, o delta >= 15 ng/L, o basal >= 64 ng/L)
+      const isPositiveCtn = isDirect0hRuleIn || ((ctn0 > p99 || ctn2 > p99) && ((deltaAbs >= 15) || (deltaAbs >= 5 && deltaRel >= 20)));
       const isRuleOutCtn = !isDirect0hRuleIn && (ctn0 <= p99 && ctn2 <= p99 && deltaAbs < 5);
+      // Elevación basal plana / crónica (ej. 24 -> 26 ng/L con variación < 20%): NO es curva de IAM agudo
+      const isFlatChronicCtn = !isPositiveCtn && !isRuleOutCtn;
 
       const ctnInterp = document.getElementById('ctn-interpretation');
       if (isDirect0hRuleIn) {
-        ctnInterp.innerHTML = `<span style="color:#9C1F1F;">🔴 Muestra 0 h &ge; 64 ng/L &rarr; Diagnóstico directo de NSTEMI sin esperar a la muestra de las 2 h.</span>`;
+        ctnInterp.innerHTML = `<span style="color:#9C1F1F;">🔴 Muestra 0 h &ge; 64 ng/L &rarr; Diagnóstico directo de IAMSEST sin esperar a la muestra de las 2 h.</span>`;
       } else if (isPositiveCtn) {
-        ctnInterp.innerHTML = `<span style="color:#9C1F1F;">🔴 Curva hs-cTnI POSITIVA con &Delta; de ${deltaAbs.toFixed(1)} ng/L &rarr; Criterio diagnóstico de NSTEMI.</span>`;
+        ctnInterp.innerHTML = `<span style="color:#9C1F1F;">🔴 Curva aguda de hs-cTnI POSITIVA (&Delta; = ${deltaAbs.toFixed(1)} ng/L; variación ${deltaRel.toFixed(0)}%) &rarr; Criterio diagnóstico de IAMSEST.</span>`;
       } else if (isRuleOutCtn) {
-        ctnInterp.innerHTML = `<span style="color:#2E7D32;">🟢 Seriación 0h/2h NEGATIVA &le; ${p99} ng/L con &Delta; &lt; 5 ng/L &rarr; Descarta necrosis aguda.</span>`;
+        ctnInterp.innerHTML = `<span style="color:#2E7D32;">🟢 Seriación 0h/2h NEGATIVA &le; ${p99} ng/L sin delta &rarr; Descarta necrosis miocárdica aguda.</span>`;
       } else {
-        ctnInterp.innerHTML = `<span style="color:#B4690E;">🟠 Zona Gris con &Delta; de ${deltaAbs.toFixed(1)} ng/L &rarr; Solicitar 3.ª muestra a las 3 h y descartar daño crónico.</span>`;
+        ctnInterp.innerHTML = `<span style="color:#2E7D32;">🟢 Elevación basal PLANA / ESTABLE (&Delta; = ${deltaAbs.toFixed(1)} ng/L; variación ${deltaRel.toFixed(0)}% &lt; 20%) &rarr; Compatible con elevación basal crónica, NO con curva de infarto agudo. Valorar clínica de Angina Inestable abajo:</span>`;
       }
 
-      // Texto de ayuda de angina adaptado exclusivamente a la opción elegida
+      // Texto de ayuda de los 3 criterios de Angina Inestable + matiz mujer
       const anginaHelper = document.getElementById('txt-angina-helper');
+      const matizMujerStr = isMujer
+        ? '<br/>🚺 <strong>Matiz en la Mujer:</strong> Valorar especialmente opresión con irradiación a <strong>región interescapular (espalda), mandíbula o epigastrio</strong> y cortejo de <strong>disnea brusca, náuseas o fatiga extrema</strong>.'
+        : '';
+
       if (angina === 'no') {
-        anginaHelper.innerHTML = 'Dolor sin criterios de angina típica y puntuación HEART de 0 a 3 puntos.';
-      } else if (angina === 'intermedio') {
-        anginaHelper.innerHTML = 'Dolor con rasgos intermedios o puntuación HEART de 4 a 6 puntos que requiere observación o estudio no invasivo.';
+        anginaHelper.innerHTML = '<strong>Seleccionado (Sin criterios de Angina Inestable):</strong> El paciente no presenta angina de esfuerzo de repetición, ni angina progresiva/en reposo recurrente, ni un episodio único con múltiples características anginosas (opresivo + irradiación típica + cortejo vegetativo).' + matizMujerStr;
+      } else if (angina === 'criterio1') {
+        anginaHelper.innerHTML = '<strong>Criterio 1 de Angina Inestable confirmado:</strong> Dolor torácico opresivo de repetición (&gt; 1 episodio) con disminución del umbral de esfuerzo de aparición o con clínica en reposo (descartadas causas secundarias).' + matizMujerStr;
+      } else if (angina === 'criterio2') {
+        anginaHelper.innerHTML = '<strong>Criterio 2 de Angina Inestable confirmado:</strong> Dolor torácico opresivo de repetición con los esfuerzos de inicio hace menos de 2 meses (descartadas causas secundarias).' + matizMujerStr;
       } else {
-        anginaHelper.innerHTML = 'Opresión retroesternal típica en reposo &gt; 20 min, de reciente comienzo o progresiva, o puntuación HEART &ge; 7 puntos.';
+        anginaHelper.innerHTML = '<strong>Criterio 3 de Angina Inestable confirmado:</strong> Único episodio de dolor torácico con múltiples características anginosas simultáneas: opresivo + irradiación a miembros superiores, mandíbula o región interescapular + cortejo vegetativo asociado.' + matizMujerStr;
       }
 
-      // 3. Visibilidad progresiva de los paneles de la izquierda: todo lo que no aplica desaparece
+      // 3. Visibilidad progresiva de los paneles de la izquierda
       const boxInst = document.getElementById('box-instability');
       const boxTrop = document.getElementById('box-troponin');
       const boxAngSub = document.getElementById('box-angina-sub');
-      const boxStep5 = document.getElementById('box-step5-container');
-      const boxWinCol = document.getElementById('box-window-col');
-      const boxRenalCol = document.getElementById('box-renal-col');
-      const boxBleedCol = document.getElementById('box-bleed-col');
 
       if (ecg === 'scacest') {
         boxInst.classList.add('hidden');
         boxTrop.classList.add('hidden');
-        boxWinCol.classList.add('hidden');
-        boxRenalCol.classList.add('hidden');
-        if (isAnciano || isJovenMujer) {
-          boxStep5.classList.add('hidden');
-          boxBleedCol.classList.add('hidden');
-        } else {
-          boxStep5.classList.remove('hidden');
-          boxBleedCol.classList.remove('hidden');
-        }
-      } else if (inst === 'inestable' || inst === 'secundario') {
+      } else if (inst === 'inestable' || inst === 'secundario' || ecg === 'dinamico') {
         boxInst.classList.remove('hidden');
         boxTrop.classList.add('hidden');
-        boxStep5.classList.add('hidden');
-      } else if (ecg === 'dinamico') {
-        boxInst.classList.remove('hidden');
-        boxTrop.classList.add('hidden');
-        boxStep5.classList.remove('hidden');
-        boxWinCol.classList.remove('hidden');
-        boxRenalCol.classList.remove('hidden');
-        if (win === 'semana' || isAnciano || isRenalSevera) {
-          boxBleedCol.classList.add('hidden');
-        } else {
-          boxBleedCol.classList.remove('hidden');
-        }
       } else {
         boxInst.classList.remove('hidden');
         boxTrop.classList.remove('hidden');
-
         if (isPositiveCtn) {
           boxAngSub.classList.add('hidden');
-          boxStep5.classList.remove('hidden');
-          boxWinCol.classList.remove('hidden');
-          boxRenalCol.classList.remove('hidden');
-          if (win === 'semana' || isAnciano || isRenalSevera) {
-            boxBleedCol.classList.add('hidden');
-          } else {
-            boxBleedCol.classList.remove('hidden');
-          }
         } else {
           boxAngSub.classList.remove('hidden');
-          if (angina === 'inestable') {
-            boxStep5.classList.remove('hidden');
-            boxWinCol.classList.remove('hidden');
-            boxRenalCol.classList.remove('hidden');
-            boxBleedCol.classList.add('hidden');
-          } else {
-            boxStep5.classList.add('hidden');
-          }
         }
       }
 
-      // 4. Construcción del Panel Derecho PERSONALIZADO (solo la pauta exacta del paciente seleccionado)
+      // 4. Construcción del Panel Derecho PERSONALIZADO
       const strSexo = isMujer ? 'Mujer' : 'Hombre';
-      const strEdad = isAnciano ? '≥ 75 años' : (isJovenMujer ? '≤ 55 años / Periparto' : (isMujer ? '56 a 74 años' : '< 75 años'));
+      const strEdad = isFragilBarthel
+        ? '> 80 años con Barthel < 30'
+        : (isAnciano ? '≥ 75 años con Barthel ≥ 30' : (isJovenMujer ? '≤ 55 años / Periparto' : (isMujer ? '56 a 74 años' : '< 75 años')));
       chip.textContent = `👤 Perfil seleccionado: ${strSexo} · ${strEdad}`;
 
       let sbarText = "";
+      const hasUnstableAngina = (angina !== 'no');
 
-      // CASO 1: SCACEST
+      // CASO 1: SCACEST (CÓDIGO INFARTO)
       if (ecg === 'scacest') {
         card.style.backgroundColor = '#FBE4E4';
         card.style.borderColor = '#9C1F1F';
@@ -937,26 +844,18 @@
         timingBadge.textContent = 'ICP PRIMARIA < 90 MIN';
 
         loc.innerHTML = 'Traslado inmediato a <strong>BOX DE CRÍTICOS</strong> &rarr; Avisar a <strong>Cardiología de Guardia y Hemodinámica</strong> &rarr; Directo a <strong>SALA DE HEMODINÁMICA</strong> &rarr; Ingreso en <strong>UNIDAD CORONARIA</strong>.';
+        antiplat.innerHTML = '• En Urgencias: <strong>Administrar SOLO AAS 300 mg v.o. de carga</strong> (o 150–250 mg i.v.).<br/>• <strong>2.º Antiagregante en Sala de Hemodinámica:</strong> Se administra en la propia Sala tras valoración por Cardiología para evitar duplicidad de dosis.';
+        anticoag.innerHTML = '• <strong>En Sala de Hemodinámica:</strong> El bolo de Heparina No Fraccionada pre-cateterismo se administra directamente en la Sala de Hemodinámica (no administrar en Urgencias para evitar dobles dosis).';
 
         if (isJovenMujer) {
-          antiplat.innerHTML = '• <strong>AAS 300 mg v.o. de carga</strong>.<br/>• <strong>2.º Antiagregante en Sala de Hemodinámica:</strong> Esperar a ver la coronariografía por alta probabilidad de Disección Coronaria Espontánea SCAD.';
-        } else if (isAnciano || isAltoSangrado) {
-          antiplat.innerHTML = '• <strong>AAS 300 mg v.o. de carga</strong>.<br/>• <strong>2.º Antiagregante consensuado con Cardiología:</strong> <strong>Clopidogrel 600 mg v.o.</strong> o <strong>Ticagrelor 180 mg v.o.</strong>';
-        } else {
-          antiplat.innerHTML = '• <strong>AAS 300 mg v.o. de carga</strong>.<br/>• <strong>2.º Antiagregante consensuado con Cardiología:</strong> <strong>Prasugrel 60 mg v.o.</strong> o <strong>Ticagrelor 180 mg v.o.</strong>';
-        }
-
-        anticoag.innerHTML = '• <strong>Heparina No Fraccionada: Bolo de 70–100 UI/kg i.v. directo.</strong><br/>• ❌ Prohibido administrar Fondaparinux en el SCACEST.';
-
-        if (isJovenMujer) {
-          special.innerHTML = '• Si en la coronariografía se confirma Disección Coronaria Espontánea con flujo conservado TIMI 2–3 y estabilidad, el manejo de elección es conservador sin implante de stent.';
+          special.innerHTML = '• <strong>Sospecha de SCAD en mujer &le; 55 años / periparto:</strong> Si en la coronariografía se confirma disección coronaria espontánea con flujo conservado TIMI 2–3 y estabilidad, el manejo de elección es conservador sin implante de stent.';
         } else if (isMujer) {
-          special.innerHTML = '• Priorizar acceso radial y ajustar dosis de heparina al peso real. Si las arterias epicárdicas no presentan lesiones obstructivas &ge; 50%, solicitar RM Cardíaca precoz.';
+          special.innerHTML = '• Priorizar acceso radial. Si las arterias epicárdicas no presentan lesiones obstructivas &ge; 50%, completar estudio con RM Cardíaca precoz.';
         } else {
           special.innerHTML = '• Si el ascenso del ST es inferior en II, III y aVF, registrar derivaciones derechas V3R–V4R y evitar nitratos si existe afectación de ventrículo derecho.';
         }
 
-        sbarText = `CÓDIGO INFARTO CHGUV: ${strSexo} de ${strEdad} en Box de Críticos con SCACEST. Administrado AAS 300 mg + Bolo HNF 70-100 UI/kg i.v. Activada Cardiología de Guardia y Hemodinámica para ICP Primaria en < 90 min e ingreso en Unidad Coronaria.`;
+        sbarText = `CÓDIGO INFARTO CHGUV: ${strSexo} (${strEdad}) en Box de Críticos con SCACEST. Administrado AAS 300 mg en Urgencias (HNF y 2.º antiagregante en Sala de Hemodinámica para evitar dobles dosis). Activada Cardiología de Guardia / Hemodinámica.`;
       }
       // CASO 2: CAUSA SECUNDARIA (IAM TIPO 2)
       else if (inst === 'secundario') {
@@ -967,11 +866,11 @@
         title.textContent = '🟠 IAM TIPO 2 / DAÑO SECUNDARIO';
         timingBadge.textContent = 'TRATAR CAUSA PRIMARIA';
 
-        loc.innerHTML = '<strong>Boxes de Urgencias u Observación</strong> a cargo de Urgencias o de la especialidad correspondiente.';
+        loc.innerHTML = '<strong>Boxes de Urgencias u Observación</strong> a cargo de Urgencias o de la especialidad correspondiente. No activar protocolo de SCASEST.';
         antiplat.innerHTML = '• <strong>No iniciar Doble Antiagregación.</strong> El sufrimiento miocárdico es secundario al desajuste entre oferta y demanda de oxígeno.';
         anticoag.innerHTML = '• <strong>No anticoagular como síndrome coronario agudo aterotrombótico.</strong>';
         special.innerHTML = '• Corregir la causa desencadenante: control de frecuencia en taquiarritmia, transfusión si anemia severa, oxigenoterapia y tratamiento de sepsis o hipoxemia. No requiere cateterismo urgente.';
-        sbarText = `IAM Tipo 2 / Secundario: ${strSexo} de ${strEdad} con daño miocárdico secundario a causa extracoronaria activa. Se corrige el factor desencadenante sin doble antiagregación ni cateterismo urgente.`;
+        sbarText = `IAM Tipo 2 / Secundario: ${strSexo} (${strEdad}) con daño miocárdico secundario a causa extracoronaria activa. Se corrige el factor desencadenante sin doble antiagregación ni cateterismo urgente.`;
       }
       // CASO 3: SCASEST MUY ALTO RIESGO (< 2h)
       else if (inst === 'inestable') {
@@ -983,101 +882,78 @@
         timingBadge.textContent = 'CATETERISMO < 2 HORAS';
 
         loc.innerHTML = 'Pasar de inmediato a <strong>BOX DE CRÍTICOS u OBSERVACIÓN A MONITORIZADA</strong> &rarr; <strong>Avisar de inmediato al Cardiólogo de Guardia</strong> &rarr; <strong>SALA DE HEMODINÁMICA en &lt; 2 h</strong> &rarr; <strong>UNIDAD CORONARIA</strong>.';
-        antiplat.innerHTML = '• <strong>SOLO AAS 300 mg de carga.</strong><br/>• ❌ <strong>No administrar segundo antiagregante</strong> antes de conocer la anatomía coronaria.';
-        anticoag.innerHTML = '• <strong>Heparina No Fraccionada: Bolo de 60–70 UI/kg i.v.</strong> hasta un máximo de 5.000 UI, seguido de perfusión i.v. para pasar directamente a Sala de Hemodinámica.';
+        antiplat.innerHTML = '• En Urgencias: <strong>Administrar SOLO AAS 300 mg de carga.</strong><br/>• No administrar 2.º antiagregante antes de conocer la anatomía coronaria en Sala.';
+        anticoag.innerHTML = '• <strong>En Sala de Hemodinámica / Coordinado con Cardiología:</strong> No administrar heparina subcutánea en Urgencias; la anticoagulación i.v. se administra al pasar a Sala de Hemodinámica evitando duplicidad de dosis.';
         special.innerHTML = '• Se activa de inmediato con independencia de la hora o del día de la semana, sin esperar a seriación de troponinas.';
-        sbarText = `SCASEST MUY ALTO RIESGO < 2h: ${strSexo} de ${strEdad} en Box Críticos / Observación A con criterios de inestabilidad o dolor refractario. Administrado SOLO AAS 300 mg + Bolo HNF i.v. Comento con Cardiólogo de Guardia para cateterismo emergente en < 2 h e ingreso en Unidad Coronaria.`;
+        sbarText = `SCASEST MUY ALTO RIESGO < 2h: ${strSexo} (${strEdad}) en Box Críticos / Observación A con criterios de inestabilidad o dolor refractario. Administrado SOLO AAS 300 mg. Comento con Cardiólogo de Guardia para cateterismo emergente en < 2 h.`;
       }
-      // CASO 4: SCASEST ALTO RIESGO (Troponina positiva, ECG dinámico o Angina Inestable de alto riesgo)
-      else if (isPositiveCtn || ecg === 'dinamico' || angina === 'inestable') {
+      // CASO 4: IAMSEST O ANGINA INESTABLE EN PACIENTE > 80 AÑOS CON BARTHEL < 30 (MANEJO CONSERVADOR EN URGENCIAS)
+      else if (isFragilBarthel && (isPositiveCtn || ecg === 'dinamico' || hasUnstableAngina)) {
+        card.style.backgroundColor = '#E8F5E9';
+        card.style.borderColor = '#2E7D32';
+        card.style.color = '#1E2323';
+        banner.style.backgroundColor = '#2E7D32';
+        title.textContent = '🟢 SCASEST EN > 80 AÑOS CON BARTHEL < 30 — MANEJO CONSERVADOR';
+        timingBadge.textContent = 'ALTA TRAS 5 H SIN ANGINA';
+
+        loc.innerHTML = 'Mantener en <strong>Observación de Urgencias durante 5 horas</strong>.<br/>• Si el paciente se encuentra <strong>estable y SIN ANGINA tras 5 h de observación</strong> &rarr; <strong>Alta directa desde el Servicio de Urgencias</strong> con tratamiento médico (evitando ingresos e intervencionismos fútiles en dependencia severa).';
+        antiplat.innerHTML = '• Pauta al alta desde Urgencias: <strong>Doble Antiagregación con AAS 100 mg/24h</strong> (tras dosis inicial de 300 mg) + <strong>Clopidogrel 75 mg/24h</strong> (tras dosis de carga de 300 mg) + Pantoprazol 40 mg/24h.';
+        anticoag.innerHTML = '• <strong>No iniciar anticoagulación parenteral de puente a cateterismo</strong> al optarse por manejo conservador no invasivo.';
+        special.innerHTML = '• <strong>Tratamiento antianginoso al alta:</strong> Asociar <strong>Bisoprolol o Amlodipino</strong> (ajustado a PA y FC) + <strong>Parche transdérmico de Nitroglicerina (NTG) 5 mg</strong> (retirando por la noche).';
+        sbarText = `SCASEST en paciente > 80 años con Índice de Barthel < 30: Asintomático y sin angina tras 5 horas de observación en Urgencias. Según protocolo CHGUV se procede a alta desde Urgencias con manejo conservador: AAS + Clopidogrel + Bisoprolol/Amlodipino + parche de NTG 5 mg.`;
+      }
+      // CASO 5: IAMSEST (CURVA AGUDA DE TROPONINA) O CAMBIOS DINÁMICOS ST O ANGINA INESTABLE (3 CRITERIOS)
+      else if (isPositiveCtn || ecg === 'dinamico' || hasUnstableAngina) {
         const motivoAlto = (ecg === 'dinamico')
-          ? 'Descenso dinámico del segmento ST/T'
-          : (isDirect0hRuleIn ? `NSTEMI con hs-cTnI basal de ${ctn0} ng/L` : (isPositiveCtn ? `NSTEMI con curva hs-cTnI de ${ctn0} a ${ctn2} ng/L` : 'Angina Inestable de alto riesgo'));
+          ? 'Descenso dinámico del segmento ST / onda T'
+          : (isDirect0hRuleIn
+              ? `IAMSEST con hs-cTnI basal de ${ctn0} ng/L`
+              : (isPositiveCtn
+                  ? `IAMSEST con curva aguda de hs-cTnI de ${ctn0} a ${ctn2} ng/L`
+                  : 'Angina Inestable clínica que cumple criterios del protocolo'));
 
-        if (win === 'semana') {
-          // DOMINGO TARDE A JUEVES Y VIERNES MAÑANA (< 24h)
-          card.style.backgroundColor = '#FEF5E7';
-          card.style.borderColor = '#B4690E';
-          card.style.color = '#1E2323';
-          banner.style.backgroundColor = '#B4690E';
-          title.textContent = '🟠 SCASEST ALTO RIESGO — CATETERISMO < 24 H';
-          timingBadge.textContent = 'COMENTAR CON CARDIOLOGÍA';
-
-          loc.innerHTML = 'Monitorizar en <strong>OBSERVACIÓN A de Urgencias</strong> y <strong>comentar con el Cardiólogo de Guardia</strong> para traslado a <strong>PLANTA DE CARDIOLOGÍA CON TELEMETRÍA</strong> o <strong>UNIDAD CORONARIA</strong>.';
-
-          if (isAnciano) {
-            antiplat.innerHTML = '• <strong>En Urgencias y Planta: SOLO AAS 300 mg v.o. de carga</strong> seguido de 100 mg cada 24 h.<br/>• ❌ <strong>Prohibido pretratar con segundo antiagregante antes del cateterismo.</strong> Mañana en la Sala de Hemodinámica, tras ver las coronarias, se cargará <strong>Clopidogrel 600 mg o Ticagrelor 180 mg</strong>.';
-          } else {
-            antiplat.innerHTML = '• <strong>En Urgencias y Planta: SOLO AAS 300 mg v.o. de carga</strong> seguido de 100 mg cada 24 h.<br/>• ❌ <strong>Prohibido pretratar con segundo antiagregante antes del cateterismo.</strong> Mañana en la propia Sala de Hemodinámica, tras ver las coronarias, se cargará <strong>Prasugrel 60 mg v.o.</strong>';
-          }
-
-          if (isRenalSevera) {
-            anticoag.innerHTML = '• <strong>Heparina No Fraccionada i.v. en bomba</strong> ajustada por TTPA por filtrado glomerular &lt; 30 ml/min.';
-          } else if (isAnciano) {
-            anticoag.innerHTML = '• <strong>Enoxaparina 0,75 mg/kg s.c. cada 12 horas</strong> sin bolo intravenoso.<br/>• No cruzar nunca con Heparina No Fraccionada.';
-          } else {
-            anticoag.innerHTML = '• <strong>Enoxaparina 1 mg/kg s.c. cada 12 horas.</strong><br/>• En Sala mañana: si la última dosis fue hace &lt; 8 h no añadir más; si fue hace 8–12 h añadir bolo 0,3 mg/kg i.v. No cruzar con Heparina No Fraccionada.';
-          }
-
-          special.innerHTML = `• <strong>Motivo diagnóstico:</strong> ${motivoAlto}.<br/>• Iniciar hoy <strong>Atorvastatina 80 mg + Pantoprazol 40 mg</strong>.`;
-          sbarText = `SCASEST ALTO RIESGO < 24h: Comento con Cardiólogo de Guardia ${strSexo} de ${strEdad} en Observación A por ${motivoAlto}. Cateterismo en < 24h. Pauta: SOLO AAS 300 mg + ${isRenalSevera ? 'HNF i.v. por FGe < 30' : (isAnciano ? 'Enoxaparina 0,75 mg/kg/12h s.c.' : 'Enoxaparina 1 mg/kg/12h s.c.')}.`;
-        } else {
-          // VIERNES TARDE, SÁBADO Y DOMINGO POR LA MAÑANA (> 24h hasta el Lunes)
-          card.style.backgroundColor = '#E6F4F1';
-          card.style.borderColor = '#0C7860';
-          card.style.color = '#1E2323';
-          banner.style.backgroundColor = '#0C7860';
-          title.textContent = '🟢 SCASEST ALTO RIESGO — ESPERA HASTA EL LUNES';
-          timingBadge.textContent = 'COMENTAR CON CARDIOLOGÍA';
-
-          loc.innerHTML = 'Monitorizar en <strong>OBSERVACIÓN A de Urgencias</strong> y <strong>comentar con el Cardiólogo de Guardia</strong> para ingreso en <strong>PLANTA DE CARDIOLOGÍA CON TELEMETRÍA</strong> o <strong>UNIDAD CORONARIA</strong>.';
-
-          if (isAnciano || isRenalSevera || isAltoSangrado || !isPositiveCtn) {
-            const razonSoloAas = isAnciano ? 'edad &ge; 75 años' : (isRenalSevera ? 'filtrado glomerular &lt; 30 ml/min' : (!isPositiveCtn ? 'troponina negativa' : 'alto riesgo hemorrágico, anticoagulación oral o sospecha quirúrgica'));
-            antiplat.innerHTML = `• <strong>Por ${razonSoloAas}: MANTENER SOLO AAS 300 mg de carga</strong> seguido de 100 mg cada 24 h durante el fin de semana.<br/>• El segundo antiagregante se administrará el lunes en la Sala de Hemodinámica tras conocer la anatomía coronaria.`;
-          } else {
-            antiplat.innerHTML = '• <strong>AAS 300 mg de carga + consensuar con el Cardiólogo de Guardia iniciar Ticagrelor 180 mg v.o. o Clopidogrel 300–600 mg v.o.</strong> para cubrir la espera &gt; 24–48 h hasta el lunes.<br/>• ❌ <strong>Prohibido dar Prasugrel antes del cateterismo.</strong>';
-          }
-
-          if (isRenalSevera) {
-            anticoag.innerHTML = '• <strong>Heparina No Fraccionada i.v. en perfusión</strong> ajustada por TTPA por filtrado glomerular &lt; 30 ml/min.';
-          } else {
-            anticoag.innerHTML = '• <strong>FONDAPARINUX 2,5 mg s.c. cada 24 horas</strong> durante el fin de semana.<br/>• ⚠️ <strong>REGLA OBLIGATORIA EL LUNES EN SALA:</strong> Administrar <strong>Bolo de Heparina No Fraccionada de 70–85 UI/kg i.v.</strong> al iniciar el cateterismo.';
-          }
-
-          special.innerHTML = `• <strong>Motivo diagnóstico:</strong> ${motivoAlto}.<br/>• <strong>Gatillo de rescate 24/7:</strong> Si durante el sábado o domingo reaparece dolor anginoso o cambios dinámicos del ST &rarr; avisar al Cardiólogo de Guardia para <strong>Cateterismo Urgente en &lt; 2 h</strong>.`;
-          sbarText = `SCASEST VIERNES TARDE / FIN DE SEMANA -> CATE LUNES: Comento con Cardiólogo de Guardia ${strSexo} de ${strEdad} en Observación A por ${motivoAlto}. Pauta: ${isRenalSevera ? 'HNF i.v.' : 'FONDAPARINUX 2,5 mg/24h s.c. recordando bolo HNF 70-85 UI/kg i.v. el lunes en Sala'} + ${(isAnciano || isRenalSevera || isAltoSangrado || !isPositiveCtn) ? 'SOLO AAS' : 'AAS + valorar Ticagrelor 180 mg con Cardiología'}.`;
-        }
-      }
-      // CASO 5: ZONA DE OBSERVACIÓN / RIESGO INTERMEDIO (HEART 4-6 o Zona Gris)
-      else if (!isRuleOutCtn || angina === 'intermedio') {
         card.style.backgroundColor = '#FEF5E7';
         card.style.borderColor = '#B4690E';
         card.style.color = '#1E2323';
         banner.style.backgroundColor = '#B4690E';
-        title.textContent = '🟠 ZONA DE OBSERVACIÓN / RIESGO INTERMEDIO';
-        timingBadge.textContent = '3.ª TROPONINA 3H / ESTUDIO NO INVASIVO';
+        title.textContent = '🟠 SCASEST (IAMSEST / ANGINA INESTABLE) — COMENTAR CON CARDIOLOGÍA';
+        timingBadge.textContent = 'VALORACIÓN CARDIOLOGÍA';
 
-        loc.innerHTML = '<strong>Boxes de Urgencias u Observación</strong>. Si tras la 3.ª muestra persiste duda diagnóstica o clínica de angina, <strong>comentar con el Cardiólogo de Guardia</strong>.';
-        antiplat.innerHTML = '• No iniciar Doble Antiagregación antes de confirmar diagnóstico.';
-        anticoag.innerHTML = '• No iniciar anticoagulación parenteral hasta confirmar SCASEST.';
-        special.innerHTML = '• Extraer 3.ª muestra de hs-cTnI a las 3 h, realizar ecocardiograma transtorácico y valorar estudio no invasivo mediante <strong>Angio-TC coronario</strong> o prueba de detección de isquemia.';
-        sbarText = `ZONA DE OBSERVACIÓN / RIESGO INTERMEDIO: ${strSexo} de ${strEdad} con ECG normal y hs-cTnI 0h ${ctn0} / 2h ${ctn2} ng/L. Se solicita 3.ª muestra a las 3 h, ecocardiograma y valoración de prueba no invasiva.`;
+        loc.innerHTML = 'Monitorizar en <strong>OBSERVACIÓN A de Urgencias</strong> y <strong>comentar con el Cardiólogo de Guardia</strong> para ingreso en <strong>Planta de Cardiología con Telemetría o Unidad Coronaria</strong>.';
+        antiplat.innerHTML = '• En Urgencias: <strong>Administrar SOLO AAS 300 mg v.o. de carga</strong> seguido de 100 mg/24h.<br/>• <strong>2.º Antiagregante:</strong> No administrar en Urgencias de rutina; solo se pauta bajo indicación del Cardiólogo de Guardia cuando actúa como puente al cateterismo.';
+        anticoag.innerHTML = '• <strong>No administrar heparina en Urgencias antes de comentar con Cardiología</strong> para evitar duplicidad de dosis.<br/>• <strong>Protocolo UCO CHGUV al ingreso:</strong> Anticoagulación con <strong>Fondaparinux (Arixtra®) 2,5 mg/24h s.c.</strong> (recordando bolo de HNF en la Sala de Hemodinámica el día del cateterismo).';
+        special.innerHTML = `• <strong>Motivo diagnóstico:</strong> ${motivoAlto}.<br/>• Habiendo descartado causas secundarias de elevación de troponina o de clínica anginosa.`;
+        sbarText = `SCASEST CHGUV: Comento con Cardiólogo de Guardia ${strSexo} (${strEdad}) en Observación A por ${motivoAlto}. Administrado AAS 300 mg en Urgencias; pendiente de pautar Arixtra 2,5 mg s.c. según protocolo UCO al ingreso.`;
       }
-      // CASO 6: BAJO RIESGO / RULE-OUT ESC 0h/2h
+      // CASO 6: TROPONINA PLANA / ESTABLE (SIN CURVA AGUDA) Y SIN CRITERIOS DE ANGINA INESTABLE
+      else if (isFlatChronicCtn) {
+        card.style.backgroundColor = '#E8F5E9';
+        card.style.borderColor = '#2E7D32';
+        card.style.color = '#1E2323';
+        banner.style.backgroundColor = '#2E7D32';
+        title.textContent = '🟢 ELEVACIÓN BASAL ESTABLE SIN ANGINA INESTABLE — DESCARTADO SCA';
+        timingBadge.textContent = 'NO LLAMAR A CARDIOLOGÍA';
+
+        loc.innerHTML = '<strong>Boxes Generales de Urgencias</strong>. <strong>NO requiere 3.ª troponina ni llamar al Cardiólogo de Guardia</strong>: la ausencia de curva dinámica (&Delta; &lt; 20%) con ECG normal y sin criterios de angina inestable descarta un evento coronario agudo.';
+        antiplat.innerHTML = '• No iniciar antiagregación aguda de SCA.';
+        anticoag.innerHTML = '• No iniciar anticoagulación parenteral.';
+        special.innerHTML = `• Seriación de hs-cTnI plana (${ctn0} &rarr; ${ctn2} ng/L; &Delta; = ${deltaAbs.toFixed(1)} ng/L, variación ${deltaRel.toFixed(0)}% &lt; 20%) compatible con valor basal crónico (edad, HTA, HVI o función renal), sin cumplir ninguno de los 3 criterios de Angina Inestable. Alta o manejo por Urgencias según clínica no cardiológica.`;
+        sbarText = `Descartado SCA agudo en Urgencias: ${strSexo} (${strEdad}) con ECG sin isquemia aguda, troponina plana sin curva dinámica (0h: ${ctn0} / 2h: ${ctn2} ng/L; variación < 20%) y sin criterios de angina inestable. Alta / manejo por Urgencias sin requerir interconsulta a Cardiología.`;
+      }
+      // CASO 7: BAJO RIESGO / RULE-OUT ESC 0h/2h (TROPONINAS <= P99 Y SIN CRITERIOS DE ANGINA INESTABLE)
       else {
         card.style.backgroundColor = '#E8F5E9';
         card.style.borderColor = '#2E7D32';
         card.style.color = '#1E2323';
         banner.style.backgroundColor = '#2E7D32';
-        title.textContent = '🟢 BAJO RIESGO — RULE-OUT ESC 0h/2h';
+        title.textContent = '🟢 BAJO RIESGO — RULE-OUT 0h/2h SIN ANGINA INESTABLE';
         timingBadge.textContent = 'ALTA DIRECTA DESDE URGENCIAS';
 
-        loc.innerHTML = '<strong>Boxes Generales de Urgencias</strong>. No ocupa cama monitorizada en Observación A.';
+        loc.innerHTML = '<strong>Boxes Generales de Urgencias</strong>. No ocupa cama monitorizada en Observación A ni requiere comentar con Cardiología.';
         antiplat.innerHTML = '• No precisa iniciar antiagregación aguda.';
         anticoag.innerHTML = '• No precisa anticoagulación parenteral.';
-        special.innerHTML = `• Seriación 0h/2h de hs-cTnI &le; ${p99} ng/L sin delta significativo + ECG normal + dolor no anginoso con escala HEART de 0 a 3 puntos. Valor predictivo negativo &gt; 99,5% para alta directa segura.`;
-        sbarText = `RULE-OUT ESC 0h/2h CHGUV: ${strSexo} de ${strEdad} asintomático/a, ECG normal, seriación hs-cTnI 0h/2h negativa ${ctn0}/${ctn2} ng/L bajo el umbral de ${p99} ng/L y escala HEART <= 3. Alta directa desde Urgencias.`;
+        special.innerHTML = `• Seriación 0h/2h de hs-cTnI &le; ${p99} ng/L sin delta significativo + ECG normal + no cumple ninguno de los 3 criterios de Angina Inestable. Alta segura desde Urgencias.`;
+        sbarText = `RULE-OUT SCA CHGUV: ${strSexo} (${strEdad}) con ECG normal, seriación hs-cTnI 0h/2h negativa (${ctn0}/${ctn2} ng/L; umbral ${p99} ng/L) y sin criterios clínicos de angina inestable. Alta directa desde Urgencias.`;
       }
 
       sbar.value = sbarText;
@@ -1090,48 +966,6 @@
       const btn = document.getElementById('btn-copy');
       btn.textContent = '¡Copiado!';
       setTimeout(() => { btn.textContent = 'Copiar Nota'; }, 1800);
-    }
-
-    function calcHeart() {
-      const h = parseInt(document.getElementById('h-hist').value) || 0;
-      const e = parseInt(document.getElementById('h-ecg').value) || 0;
-      const a = parseInt(document.getElementById('h-age').value) || 0;
-      const r = parseInt(document.getElementById('h-risk').value) || 0;
-      const t = parseInt(document.getElementById('h-trop').value) || 0;
-      const tot = h + e + a + r + t;
-
-      const box = document.getElementById('heart-result-box');
-      const sc = document.getElementById('heart-score-text');
-      const ac = document.getElementById('heart-action-text');
-
-      if (tot <= 3) {
-        box.style.backgroundColor = '#E8F5E9';
-        box.style.borderColor = '#2E7D32';
-        sc.innerHTML = `<span style="color:#2E7D32;">${tot} puntos — BAJO RIESGO (HEART 0–3)</span>`;
-        ac.textContent = 'Riesgo de MACE < 1%: Con hs-cTnI 0h/2h negativa respalda el Alta Directa Segura (Rule-Out).';
-      } else if (tot <= 6) {
-        box.style.backgroundColor = '#FEF5E7';
-        box.style.borderColor = '#B4690E';
-        sc.innerHTML = `<span style="color:#B4690E;">${tot} puntos — RIESGO INTERMEDIO (HEART 4–6)</span>`;
-        ac.textContent = 'Valorar observación (3.ª troponina), ecocardiograma o prueba no invasiva (Angio-TC / detección de isquemia).';
-      } else {
-        box.style.backgroundColor = '#FBE4E4';
-        box.style.borderColor = '#9C1F1F';
-        sc.innerHTML = `<span style="color:#9C1F1F;">${tot} puntos — ALTO RIESGO (HEART 7–10)</span>`;
-        ac.textContent = 'Alta probabilidad de evento coronario: Comentar con el Cardiólogo de Guardia para ingreso y manejo invasivo.';
-      }
-      return tot;
-    }
-
-    function applyHeartToAlgo() {
-      const tot = calcHeart();
-      document.getElementById('inp-chest-pain').value = 'si_dolor';
-      const angSel = document.getElementById('inp-angina');
-      if (tot <= 3) angSel.value = 'no';
-      else if (tot <= 6) angSel.value = 'intermedio';
-      else angSel.value = 'inestable';
-      switchTab('algoritmo');
-      evaluateProtocol();
     }
 
     function calcGrace() {
@@ -1158,24 +992,23 @@
         box.style.backgroundColor = '#FBE4E4';
         box.style.borderColor = '#9C1F1F';
         scoreTxt.innerHTML = `<span style="color:#9C1F1F;">${total} puntos — ALTO RIESGO PRONÓSTICO (&gt; 140)</span>`;
-        actTxt.textContent = 'En un paciente YA diagnosticado de SCASEST (o con Angina Inestable verdadera), GRACE > 140 es criterio de Cateterismo Temprano (< 24 h).';
+        actTxt.textContent = 'En un paciente YA diagnosticado de SCASEST, GRACE > 140 identifica Alto Riesgo para estrategia invasiva temprana (< 24 h).';
       } else if (total > 108) {
         box.style.backgroundColor = '#FEF5E7';
         box.style.borderColor = '#B4690E';
         scoreTxt.innerHTML = `<span style="color:#B4690E;">${total} puntos — RIESGO INTERMEDIO (109–140)</span>`;
-        actTxt.textContent = 'Si tiene NSTEMI (hs-cTnI > p99) o cambios dinámicos ST sigue siendo Alto Riesgo (< 24 h). Si es Angina Inestable con troponina (-), valorar cateterismo en el ingreso o test no invasivo.';
+        actTxt.textContent = 'Si tiene IAMSEST (curva aguda de troponina) o cambios dinámicos del ST sigue siendo Alto Riesgo.';
       } else {
         box.style.backgroundColor = '#E8F5E9';
         box.style.borderColor = '#2E7D32';
         scoreTxt.innerHTML = `<span style="color:#2E7D32;">${total} puntos — BAJO RIESGO PRONÓSTICO (&le; 108)</span>`;
-        actTxt.textContent = 'Mortalidad intrahospitalaria estimada < 1%. (Si tiene NSTEMI por troponina positiva, sigue teniendo indicación de coronariografía en < 24 h).';
+        actTxt.textContent = 'Mortalidad intrahospitalaria estimada < 1%.';
       }
       return total;
     }
 
     // Inicializar al cargar
     onSexChange();
-    calcHeart();
     calcGrace();
   </script>
 </body>
