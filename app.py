@@ -10,20 +10,20 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Reducir márgenes superiores de Streamlit para aprovechar toda la pantalla
+# Ajuste limpio de márgenes en Streamlit sin recortar la parte superior
 st.markdown(
     """
     <style>
         .block-container {
-            padding-top: 1.2rem !important;
-            padding-bottom: 1rem !important;
-            max-width: 1200px !important;
+            padding-top: 2rem !important;
+            padding-bottom: 0.5rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            max-width: 1180px !important;
         }
-        div[data-testid="stDownloadButton"] > button {
-            width: 100%;
-            font-weight: 700;
-            border-radius: 0.5rem;
-            padding: 0.55rem 1rem;
+        header[data-testid="stHeader"] {
+            height: 1.5rem !important;
+            background: transparent !important;
         }
     </style>
     """,
@@ -35,51 +35,65 @@ PDF_WORD_PATH = os.path.join(BASE_DIR, "Protocolo_Unificado_SCA_CHGUV_2026.pdf")
 PDF_PPT_PATH = os.path.join(BASE_DIR, "Presentacion_Protocolo_SCA_CHGUV_2026.pdf")
 HTML_APP_PATH = os.path.join(BASE_DIR, "App_Interactiva_Protocolo_SCA_CHGUV.html")
 
-# Barra superior de descarga directa en PDF (Documento Protocolo y Presentación PPT por separado)
-col1, col2 = st.columns(2)
-with col1:
-    if os.path.exists(PDF_WORD_PATH):
-        with open(PDF_WORD_PATH, "rb") as f_word:
-            st.download_button(
-                label="📄 Descargar Documento del Protocolo Completo en PDF (Word -> PDF)",
-                data=f_word.read(),
-                file_name="Protocolo_Unificado_SCA_CHGUV_2026.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-            )
-
-with col2:
-    if os.path.exists(PDF_PPT_PATH):
-        with open(PDF_PPT_PATH, "rb") as f_ppt:
-            st.download_button(
-                label="📊 Descargar Presentación de Diapositivas en PDF (PPT -> PDF)",
-                data=f_ppt.read(),
-                file_name="Presentacion_Protocolo_SCA_CHGUV_2026.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-            )
-
-# Cargar la App Interactiva HTML e inyectar los enlaces data-URI para que también funcionen dentro del iframe
 if os.path.exists(HTML_APP_PATH):
     with open(HTML_APP_PATH, "r", encoding="utf-8") as f_html:
         html_content = f_html.read()
 
+    b64_w = ""
+    b64_p = ""
     if os.path.exists(PDF_WORD_PATH):
         with open(PDF_WORD_PATH, "rb") as fw:
             b64_w = base64.b64encode(fw.read()).decode("utf-8")
-            html_content = html_content.replace(
-                'href="Protocolo_Unificado_SCA_CHGUV_2026.pdf"',
-                f'href="data:application/pdf;base64,{b64_w}"'
-            )
 
     if os.path.exists(PDF_PPT_PATH):
         with open(PDF_PPT_PATH, "rb") as fp:
             b64_p = base64.b64encode(fp.read()).decode("utf-8")
-            html_content = html_content.replace(
-                'href="Presentacion_Protocolo_SCA_CHGUV_2026.pdf"',
-                f'href="data:application/pdf;base64,{b64_p}"'
-            )
 
-    components.html(html_content, height=1080, scrolling=True)
+    # Inyectar descarga mediante Blob en la Pestaña 4 para que funcione dentro del contenedor de Streamlit
+    blob_script = f"""
+    <script>
+      const B64_WORD_PDF = "{b64_w}";
+      const B64_PPT_PDF = "{b64_p}";
+
+      function downloadBase64Pdf(b64Data, fileName) {{
+        if (!b64Data) return true;
+        const byteCharacters = atob(b64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {{
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }}
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {{ type: "application/pdf" }});
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return false;
+      }}
+
+      window.addEventListener("DOMContentLoaded", () => {{
+        const btnWord = document.getElementById("link-dl-word-pdf");
+        if (btnWord && B64_WORD_PDF) {{
+          btnWord.onclick = (e) => {{
+            e.preventDefault();
+            downloadBase64Pdf(B64_WORD_PDF, "Protocolo_Unificado_SCA_CHGUV_2026.pdf");
+          }};
+        }}
+        const btnPpt = document.getElementById("link-dl-ppt-pdf");
+        if (btnPpt && B64_PPT_PDF) {{
+          btnPpt.onclick = (e) => {{
+            e.preventDefault();
+            downloadBase64Pdf(B64_PPT_PDF, "Presentacion_Protocolo_SCA_CHGUV_2026.pdf");
+          }};
+        }}
+      }});
+    </script>
+    """
+    html_content = html_content.replace("</body>", blob_script + "
+</body>")
+
+    components.html(html_content, height=1120, scrolling=True)
 else:
     st.error("No se encontró el archivo App_Interactiva_Protocolo_SCA_CHGUV.html en el directorio.")
