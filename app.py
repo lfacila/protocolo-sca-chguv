@@ -49,7 +49,6 @@ if os.path.exists(HTML_APP_PATH):
         with open(PDF_PPT_PATH, "rb") as fp:
             b64_p = base64.b64encode(fp.read()).decode("utf-8")
 
-    # Inyectar descarga mediante Blob en la Pestaña 4 para que funcione dentro del contenedor de Streamlit
     blob_script = f"""
     <script>
       const B64_WORD_PDF = "{b64_w}";
@@ -91,8 +90,7 @@ if os.path.exists(HTML_APP_PATH):
       }});
     </script>
     """
-    html_content = html_content.replace("</body>", blob_script + "
-</body>")
+    html_content = html_content.replace("</body>", blob_script + "</body>")
 
     components.html(html_content, height=1120, scrolling=True)
 else:
